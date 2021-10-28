@@ -14,11 +14,7 @@ function handleLanguageChange(event) {
     recognition.lang = value;
   }
 }
-const two_line = /\n\n/g;
-const one_line = /\n/g;
-function linebreak(s) {
-  return s.replace(two_line, '<p></p>').replace(one_line, '<br>');
-}
+
 if (!('webkitSpeechRecognition' in window)) {
 } else {
   recognition = new webkitSpeechRecognition();
@@ -36,8 +32,7 @@ if (!('webkitSpeechRecognition' in window)) {
       }
     }
 
-    document.getElementById('interim').innerHTML =
-      linebreak(interim_transcript);
+    document.getElementById('interim').innerHTML = interim_transcript;
 
     if (finalTranscript) {
       try {
@@ -99,7 +94,7 @@ function resetTableStyles(element) {
 }
 
 function markEntry(name) {
-  document.getElementById(name).style.backgroundColor = 'red';
+  document.getElementById(name).style.backgroundColor = 'green';
 }
 
 let finalTranscript = '';
