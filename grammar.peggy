@@ -3,7 +3,7 @@
 Expression = (!Command ./Whitespace)* command:Command (!Command ./Whitespace)* { return command }
 
 Command = SubjectCommand / DirectCommand
-DirectCommand = StopCommand/CancelCommand/WaitCommand/ContinueCommand/BackCommand
+DirectCommand = NameCommand / StopCommand/CancelCommand/WaitCommand/ContinueCommand/BackCommand
 SubjectCommand = NavigateCommand/ToggleCommand/SelectCommand
 
 //Navigate
@@ -38,4 +38,6 @@ SelectCommandExplicit = trigger:("wähle"/"selektiere"/"klicke"/"klick"/"click")
 SelectCommandImplicit = subject:SelectionSubject { return new SelectCommand(undefined, subject) }
 SelectionSubject = ("recherchetipps"/"recherche tipps"/"recherche"/"zitieren"/"plagiieren"/"grundlagen des wissenschaftlichen arbeitens"/"suchstrategie"/"suchtools"/"qualität"/"quiz"/"videos")
 
+NameCommand = trigger:("mein name ist") Whitespace+ name:Name { return new NameCommand(trigger, name) }
+Name = ([a-zA-Z]*)
 Whitespace = " "

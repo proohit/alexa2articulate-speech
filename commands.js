@@ -64,8 +64,17 @@ class ToggleCommand extends Command {
     this.subject = toggleSubject;
     this.toggleState = toggleState;
   }
-
   execute() {
     console.log(`Setting ${this.subject} to ${this.toggleState}`);
+  }
+}
+
+class NameCommand extends Command {
+  constructor(trigger, name) {
+    super(trigger);
+    this.name = name;
+  }
+  execute() {
+    console.log(`Hello, ${this.name}`);
   }
 }
