@@ -1,4 +1,7 @@
 class Command {
+  constructor(trigger) {
+    this.trigger = trigger;
+  }
   execute() {
     throw new Error('Missing implementation');
   }
@@ -30,13 +33,13 @@ class ContinueCommand extends Command {
 
 class BackCommand extends Command {
   execute() {
-    console.log(`wait`);
+    console.log(`back`);
   }
 }
 
 class SelectCommand extends Command {
-  constructor(selectionSubject) {
-    super();
+  constructor(trigger, selectionSubject) {
+    super(trigger);
     this.subject = selectionSubject;
   }
 
@@ -45,8 +48,8 @@ class SelectCommand extends Command {
   }
 }
 class NavigateCommand extends Command {
-  constructor(navigationSubject) {
-    super();
+  constructor(trigger, navigationSubject) {
+    super(trigger);
     this.subject = navigationSubject;
   }
 
@@ -56,23 +59,13 @@ class NavigateCommand extends Command {
 }
 
 class ToggleCommand extends Command {
-  constructor(toggleSubject) {
-    super();
+  constructor(trigger, toggleSubject, toggleState) {
+    super(trigger);
     this.subject = toggleSubject;
+    this.toggleState = toggleState;
   }
 
   execute() {
-    console.log(`Toggling ${this.subject}`);
-  }
-}
-
-class GreetCommand extends Command {
-  constructor(name) {
-    super();
-    this.name = name;
-  }
-
-  execute() {
-    alert(`Hello, ${this.name}`);
+    console.log(`Setting ${this.subject} to ${this.toggleState}`);
   }
 }
