@@ -1,6 +1,6 @@
 
 
-Expression = Whitespace* command:Command Whitespace* { return command }
+Expression = (!Command ./Whitespace)* command:Command (!Command ./Whitespace)* { return command }
 Command = NavigateCommand/StopCommand/CancelCommand/WaitCommand/ContinueCommand/BackCommand/ToggleCommand/SelectCommand
 
 //Navigate
@@ -21,7 +21,7 @@ ContinueCommand = "continue"/"weiter" {return new ContinueCommand()}
 
 BackCommand = "back"/"zurück" {return new NavigateCommand("back")}
 
-ToggleCommand = ("turn"/"schalte") Whitespace* subject:ToggleSubject Whitespace* ("on"/"ein"/"off"/"aus") { 
+ToggleCommand = ("turn"/"schalte") Whitespace* subject:ToggleSubject Whitespace* ("on"/"ein"/"off"/"aus"/"an") { 
     return new ToggleCommand(subject) 
 }
 
