@@ -32,7 +32,7 @@ ToggleSubject = ("voice"/"sprache")
 
 //Select
 SelectCommand = SelectCommandExplicit/SelectCommandImplicit
-SelectCommandExplicit = trigger:("wähle"/"selektiere"/"klicke") Whitespace+ subject:SelectionSubject (Whitespace+ "aus"/"an")? {
+SelectCommandExplicit = trigger:("wähle"/"selektiere"/"klicke"/"klick"/"click") Whitespace+ subject:SelectionSubject (Whitespace+ ("aus"/"an"))? {
      return new SelectCommand(trigger, subject) 
 }
 SelectCommandImplicit = subject:SelectionSubject { return new SelectCommand(undefined, subject) }
