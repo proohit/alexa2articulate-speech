@@ -1,0 +1,26 @@
+#speech-result {
+  font-size: small;
+}
+
+#speech-result thead td {
+  border-bottom: 1px solid black;
+  border-left: 1px solid black;
+  padding: 4px;
+  margin: 4px;
+  font-weight: bold;
+}
+
+#speech-result thead td:first-child {
+  border-left: none;
+}
+
+#speech-result tbody td {
+  border-bottom: 1px solid black;
+  border-left: 1px solid black;
+  padding: 2px;
+}
+
+#speech-result tbody td:first-child {
+  border-left: none;
+  border-right: none;
+}

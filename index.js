@@ -1,6 +1,6 @@
 import { parse } from './grammar.js';
 let recognition;
-
+let debug = true;
 document
   .getElementById('voiceRecognitionToggle')
   .addEventListener('click', startButton);
@@ -44,6 +44,9 @@ if (!('webkitSpeechRecognition' in window)) {
         finalTranscript = finalTranscript.toLowerCase();
         const res = parse(finalTranscript);
         res.execute();
+        if (debug) {
+          handleVoiceCommandDebug(res);
+        }
       } finally {
         finalTranscript = '';
       }
@@ -58,10 +61,51 @@ if (!('webkitSpeechRecognition' in window)) {
   };
 }
 
+function handleVoiceCommandDebug(command) {
+  resetTableStyles();
+  const commandName = command.constructor.name;
+  if (commandName.includes('Command')) {
+    markEntry(`${commandName}`);
+    const commandTrigger = command.trigger;
+    if (commandTrigger) {
+      markEntry(`${commandName}-${commandTrigger}`);
+    }
+    const commandSubject = command.subject;
+    if (commandSubject) {
+      markEntry(`${commandName}-${commandSubject}`);
+    }
+    const commandToggleState = command.toggleState;
+    if (commandToggleState) {
+      markEntry(`${commandName}-${commandToggleState}`);
+    }
+    document.getElementById(commandName).scrollIntoView();
+  }
+}
+
+function resetTableStyles(element) {
+  if (element) {
+    if (element.style) {
+      element.style.backgroundColor = '';
+    }
+    if (element.childNodes.length > 0) {
+      element.childNodes.forEach(resetTableStyles);
+    }
+  } else {
+    const table = document.getElementById('speech-result');
+    if (table.childNodes.length > 0) {
+      table.childNodes.forEach(resetTableStyles);
+    }
+  }
+}
+
+function markEntry(name) {
+  document.getElementById(name).style.backgroundColor = 'red';
+}
+
 let finalTranscript = '';
 let started = false;
 
-function startButton(event) {
+function startButton() {
   if (recognition) {
     if (started) {
       recognition.stop();

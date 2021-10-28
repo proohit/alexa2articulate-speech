@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="commands.js" defer></script>
     <script src="index.js" type="module" defer></script>
+    <link rel="stylesheet" href="index.css" />
     <title>Document</title>
   </head>
   <body>
@@ -13,6 +14,129 @@
       <option value="de-de">de</option>
       <option value="en-us">en</option>
     </select>
-    <p id="interim"></p>
+    <div>
+      <p>Transkript:</p>
+      <p id="interim"></p>
+    </div>
+    <table id="speech-result">
+      <thead>
+        <tr>
+          <td>Eingabe</td>
+          <td>Eingabe</td>
+          <td>Eingabe</td>
+          <td>Befehl</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <p id="NavigateCommand-navigiere zu">navigiere zu</p>
+            <p id="NavigateCommand-gehe zu">gehe zu</p>
+            <p id="NavigateCommand-geh zu">geh zu</p>
+            <p id="NavigateCommand-wechsle zu">wechsle zu</p>
+            <p id="NavigateCommand-wechsel zu">wechsel zu</p>
+          </td>
+          <td>
+            <p id="NavigateCommand-home">home</p>
+            <p id="NavigateCommand-start">start</p>
+            <p id="NavigateCommand-übersicht">übersicht</p>
+            <p id="NavigateCommand-sitemap">sitemap</p>
+            <p id="NavigateCommand-site map">site map</p>
+            <p id="NavigateCommand-befehle">befehle</p>
+          </td>
+          <td />
+          <td id="NavigateCommand">NavigateCommand</td>
+        </tr>
+        <tr>
+          <td>
+            <p id="SelectCommand-wähle">wähle</p>
+            <p id="SelectCommand-selektiere">selektiere</p>
+            <p id="SelectCommand-klicke">klicke</p>
+          </td>
+          <td>
+            <p id="SelectCommand-recherche">recherche</p>
+            <p id="SelectCommand-zitieren">zitieren</p>
+            <p id="SelectCommand-plagiieren">plagiieren</p>
+            <p id="SelectCommand-grundlagen des wissenschaftlichen arbeitens">
+              grundlagen des wissenschaftlichen arbeitens
+            </p>
+            <p id="SelectCommand-recherchetipps">recherchetipps</p>
+            <p id="SelectCommand-recherche tipps">recherche tipps</p>
+            <p id="SelectCommand-suchstrategie">suchstrategie</p>
+            <p id="SelectCommand-suchtools">suchtools</p>
+            <p id="SelectCommand-qualität">qualität</p>
+            <p id="SelectCommand-quiz">quiz</p>
+            <p id="SelectCommand-videos">videos</p>
+          </td>
+          <td />
+          <td id="SelectCommand">SelectCommand</td>
+        </tr>
+        <tr>
+          <td>
+            <p id="ContinueCommand-continue">continue</p>
+            <p id="ContinueCommand-weiter">weiter</p>
+          </td>
+          <td></td>
+          <td />
+          <td id="ContinueCommand">ContinueCommand</td>
+        </tr>
+        <tr>
+          <td>
+            <p id="BackCommand-zurück">zurück</p>
+            <p id="BackCommand-back">back</p>
+          </td>
+          <td></td>
+          <td />
+          <td id="BackCommand">BackCommand</td>
+        </tr>
+        <tr>
+          <td>
+            <p id="WaitCommand-warte">warte</p>
+            <p id="WaitCommand-wait">wait</p>
+          </td>
+          <td></td>
+          <td />
+          <td id="WaitCommand">WaitCommand</td>
+        </tr>
+        <tr>
+          <td>
+            <p id="CancelCommand-abbrechen">abbrechen</p>
+            <p id="CancelCommand-cancel">cancel</p>
+          </td>
+          <td></td>
+          <td />
+          <td id="CancelCommand">CancelCommand</td>
+        </tr>
+        <tr>
+          <td>
+            <p id="StopCommand-stop">stop</p>
+            <p id="StopCommand-stopp">stopp</p>
+            <p id="StopCommand-beenden">beenden</p>
+            <p id="StopCommand-stoppen">stoppen</p>
+          </td>
+          <td></td>
+          <td />
+          <td id="StopCommand">StopCommand</td>
+        </tr>
+        <tr>
+          <td>
+            <p id="ToggleCommand-schalte">schalte</p>
+            <p id="ToggleCommand-turn">turn</p>
+          </td>
+          <td>
+            <p id="ToggleCommand-voice">voice</p>
+            <p id="ToggleCommand-sprache">sprache</p>
+          </td>
+          <td>
+            <p id="ToggleCommand-on">on</p>
+            <p id="ToggleCommand-off">off</p>
+            <p id="ToggleCommand-ein">ein</p>
+            <p id="ToggleCommand-an">an</p>
+            <p id="ToggleCommand-aus">aus</p>
+          </td>
+          <td id="ToggleCommand">ToggleCommand</td>
+        </tr>
+      </tbody>
+    </table>
   </body>
 </html>
