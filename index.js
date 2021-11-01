@@ -69,6 +69,11 @@ function handleVoiceCommandDebug(command) {
     if (commandSubject) {
       markEntry(`${commandName}-${commandSubject}`);
     }
+    const subjectName = command.name;
+    if (subjectName) {
+      document.getElementById(`${commandName}-name`).innerText = subjectName;
+      markEntry(`${commandName}-name`);
+    }
     const commandToggleState = command.toggleState;
     if (commandToggleState) {
       markEntry(`${commandName}-${commandToggleState}`);

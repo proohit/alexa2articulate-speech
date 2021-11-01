@@ -304,7 +304,7 @@ function peg$parse(input, options) {
        return new SelectCommand(trigger, subject) 
   };
   var peg$f10 = function(subject) { return new SelectCommand(undefined, subject) };
-  var peg$f11 = function(trigger, name) { return new NameCommand(trigger, name) };
+  var peg$f11 = function(trigger, name) { return new NameCommand(trigger, name.join('')) };
 
   var peg$currPos = 0;
   var peg$savedPos = 0;
