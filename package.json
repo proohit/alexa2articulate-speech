@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:grammar": "peggy --format es -o grammar.js grammar.peggy"
+    "build:grammar": "peggy -o grammar.js grammar.peggy"
   },
   "author": "",
   "license": "ISC",

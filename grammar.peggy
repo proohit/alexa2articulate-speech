@@ -12,7 +12,7 @@ NavigateCommandExplicit = trigger:("navigate to"/"go to"/"navigiere zu"/"geh zu"
      return new NavigateCommand(trigger, subject) 
 }
 NavigateCommandImplicit = subject:NavigationSubject { return new NavigateCommand(undefined, subject) }
-NavigationSubject = "befehle"/"help"/"hilfe"/"home"/"übersicht"/"start"/("sitemap"/"site map")/"impressum"
+NavigationSubject = "befehle"/"help"/"hilfe"/"recherche"/"gute wissenschaftliche praxis"/"zitieren"/"plagiieren"/"home"/"übersicht"/"start"/("sitemap"/"site map")/"impressum"
 
 StopCommand = trigger:("stoppen"/"stopp"/"stop"/"beenden") {return new StopCommand(trigger)}
 
@@ -36,7 +36,7 @@ SelectCommandExplicit = trigger:("wähle"/"selektiere"/"klicke"/"klick"/"click")
      return new SelectCommand(trigger, subject) 
 }
 SelectCommandImplicit = subject:SelectionSubject { return new SelectCommand(undefined, subject) }
-SelectionSubject = ("recherchetipps"/"recherche tipps"/"recherche"/"zitieren"/"plagiieren"/"grundlagen des wissenschaftlichen arbeitens"/"suchstrategie"/"suchtools"/"qualität"/"quiz"/"videos")
+SelectionSubject = ("recherchetipps"/"recherche tipps"/"grundlagen des wissenschaftlichen arbeitens"/"suchstrategie"/"suchtools"/"qualität"/"quiz"/"videos")
 
 NameCommand = trigger:("mein name ist") Whitespace+ name:Name { return new NameCommand(trigger, name.join('')) }
 Name = ([a-zA-Z]*)
