@@ -24,11 +24,13 @@ ContinueCommand = trigger:("continue"/"weiter") {return new ContinueCommand(trig
 
 BackCommand = trigger:("back"/"zurück") {return new BackCommand(trigger)}
 
-ToggleCommand = trigger:("turn"/"schalte") Whitespace* subject:ToggleSubject Whitespace* toggleState:("on"/"ein"/"off"/"aus"/"an") { 
+//Toggle
+ToggleCommand = ToggleCommandExplicit/ToggleCommandImplicit
+ToggleCommandExplicit = trigger:("turn"/"schalte") Whitespace* subject:ToggleSubject Whitespace* toggleState:("on"/"ein"/"off"/"aus"/"an") { 
     return new ToggleCommand(trigger, subject, toggleState) 
 }
-
-ToggleSubject = ("voice"/"sprache")
+ToggleCommandImplicit = subject:ToggleSubject Whitespace* toggleState:("on"/"ein"/"off"/"aus"/"an") { return new ToggleCommand(undefined, subject, toggleState) }
+ToggleSubject = ("voice"/"sprache"/"sprachassistent"/"voice assistant")
 
 //Select
 SelectCommand = SelectCommandExplicit/SelectCommandImplicit

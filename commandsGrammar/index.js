@@ -1,4 +1,4 @@
-import { parse } from './grammar.js';
+import { parse } from '../articulateScripts/grammar.js';
 let recognition;
 let debug = true;
 document
