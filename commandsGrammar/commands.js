@@ -78,3 +78,14 @@ class NameCommand extends Command {
     console.log(`Hello, ${this.name}`);
   }
 }
+
+class MediaCommand extends Command {
+  constructor(trigger, mediaSubject) {
+    super(trigger);
+    this.subject = mediaSubject;
+    this.state = trigger;
+  }
+  execute() {
+    console.log(`Setting ${this.subject} to ${this.state}`);
+  }
+}

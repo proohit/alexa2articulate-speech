@@ -99,3 +99,38 @@ class NameCommand extends Command {
     GetPlayer().SetVar('userName', this.name);
   }
 }
+
+class MediaCommand extends Command {
+  constructor(trigger, mediaSubject) {
+    super(trigger);
+    this.subject = mediaSubject;
+
+    switch (trigger) {
+      case 'spiele':
+      case 'spiel':
+      case 'play':
+        this.state = 'play';
+        break;
+
+      case 'halte':
+      case 'pause':
+        this.state = 'pause';
+        break;
+
+      case 'stop':
+        this.state = 'stop';
+        break;
+
+      default:
+        this.state = 'stop';
+        break;
+    }
+  }
+  execute() {
+    console.log(`Setting ${this.subject} to ${this.state}`);
+    GetPlayer().SetVar('mediaSubject', this.subject ?? '');
+    GetPlayer().SetVar('mediaState', this.state);
+    GetPlayer().SetVar('mediaSubject', '');
+    GetPlayer().SetVar('mediaState', '');
+  }
+}
