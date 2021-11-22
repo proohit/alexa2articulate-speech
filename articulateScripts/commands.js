@@ -3,7 +3,7 @@ class Command {
     this.trigger = trigger;
   }
   execute() {
-    throw new Error('Missing implementation');
+    throw new Error("Missing implementation");
   }
 }
 
@@ -28,16 +28,16 @@ class WaitCommand extends Command {
 class ContinueCommand extends Command {
   execute() {
     console.log(`continue`);
-    GetPlayer().SetVar('continue', true);
-    GetPlayer().SetVar('continue', false);
+    GetPlayer().SetVar("continue", true);
+    GetPlayer().SetVar("continue", false);
   }
 }
 
 class BackCommand extends Command {
   execute() {
     console.log(`back`);
-    GetPlayer().SetVar('back', true);
-    GetPlayer().SetVar('back', false);
+    GetPlayer().SetVar("back", true);
+    GetPlayer().SetVar("back", false);
   }
 }
 
@@ -59,8 +59,8 @@ class NavigateCommand extends Command {
 
   execute() {
     console.log(`Navigating to ${this.subject}`);
-    GetPlayer().SetVar('navigateSubject', this.subject);
-    GetPlayer().SetVar('navigateSubject', ''); // null causes errors in Articulate
+    GetPlayer().SetVar("navigateSubject", this.subject);
+    GetPlayer().SetVar("navigateSubject", ""); // null causes errors in Articulate
   }
 }
 
@@ -74,11 +74,15 @@ class ToggleCommand extends Command {
     console.log(`Setting ${this.subject} to ${this.toggleState}`);
 
     if (this.toggleState) {
-      this.toggleState = ['on', 'ein', 'an'].includes(this.toggleState);
+      this.toggleState = ["on", "ein", "an"].includes(this.toggleState);
     }
 
-    if (['voice', 'sprache', 'sprachassistent', 'voice assistant'].includes(this.subject)) {
-      GetPlayer().SetVar('sttEnabled', this.toggleState ?? true);
+    if (
+      ["voice", "sprache", "sprachassistent", "voice assistant"].includes(
+        this.subject
+      )
+    ) {
+      GetPlayer().SetVar("sttEnabled", this.toggleState ?? true);
     }
   }
 }
@@ -89,14 +93,14 @@ class NameCommand extends Command {
     this.name = name;
   }
   execute() {
-    const arr = this.name.split(' ');
+    const arr = this.name.split(" ");
     for (var i = 0; i < arr.length; i++) {
       arr[i] = arr[i].charAt(0).toUpperCase() + arr[i].slice(1);
     }
-    this.name = arr.join(' ');
+    this.name = arr.join(" ");
 
     console.log(`Hello, ${this.name}`);
-    GetPlayer().SetVar('userName', this.name);
+    GetPlayer().SetVar("userName", this.name);
   }
 }
 
@@ -106,31 +110,38 @@ class MediaCommand extends Command {
     this.subject = mediaSubject;
 
     switch (trigger) {
-      case 'spiele':
-      case 'spiel':
-      case 'play':
-        this.state = 'play';
+      case "spiele":
+      case "spiel":
+      case "play":
+        this.state = "play";
         break;
 
-      case 'halte':
-      case 'pause':
-        this.state = 'pause';
+      case "halte":
+      case "pause":
+      case "pausiere":
+        this.state = "pause";
         break;
 
-      case 'stop':
-        this.state = 'stop';
+      case "stop":
+      case "stoppe":
+        this.state = "stop";
         break;
 
       default:
-        this.state = 'stop';
+        this.state = "stop";
         break;
     }
   }
   execute() {
     console.log(`Setting ${this.subject} to ${this.state}`);
-    GetPlayer().SetVar('mediaSubject', this.subject ?? '');
-    GetPlayer().SetVar('mediaState', this.state);
-    GetPlayer().SetVar('mediaSubject', '');
-    GetPlayer().SetVar('mediaState', '');
+    if (this.subject === "video" || this.subject === "audio") {
+      GetPlayer().SetVar(this.subject, this.state);
+      GetPlayer().SetVar(this.subject, "");
+    } else {
+      GetPlayer().SetVar("video", this.state);
+      GetPlayer().SetVar("audio", this.state);
+      GetPlayer().SetVar("video", "");
+      GetPlayer().SetVar("audio", "");
+    }
   }
 }
