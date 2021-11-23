@@ -74,7 +74,7 @@ class ToggleCommand extends Command {
     console.log(`Setting ${this.subject} to ${this.toggleState}`);
 
     if (this.toggleState) {
-      this.toggleState = ["on", "ein", "an"].includes(this.toggleState);
+      this.toggleState = this.getToggleState(this.toggleState);
     }
 
     if (
@@ -83,6 +83,44 @@ class ToggleCommand extends Command {
       )
     ) {
       GetPlayer().SetVar("sttEnabled", this.toggleState ?? true);
+    } else if (["untertitel"].includes(this.subject)) {
+      const captions = document.getElementById("captions");
+      if (captions) {
+        const captionsState = this.getToggleState(
+          captions.attributes.getNamedItem("aria-pressed").value
+        );
+        if (this.toggleState !== Boolean(captionsState)) {
+          captions.click();
+        }
+      }
+    } else if (["menü", "menu"].includes(this.subject)) {
+      const menu = document.getElementById("hamburger");
+      if (menu) {
+        const menuState = this.getToggleState(
+          menu.attributes.getNamedItem("aria-expanded").value
+        );
+        if (this.toggleState !== Boolean(menuState)) {
+          menu.click();
+        }
+      }
+    }
+  }
+
+  getToggleState(state) {
+    switch (state) {
+      case "on":
+      case "ein":
+      case "an":
+      case "true":
+        return true;
+
+      case "aus":
+      case "off":
+      case "false":
+        return false;
+
+      default:
+        return Boolean(toggleState);
     }
   }
 }

@@ -30,7 +30,7 @@ ToggleCommandExplicit = trigger:("turn"/"schalte") Whitespace* subject:ToggleSub
     return new ToggleCommand(trigger, subject, toggleState) 
 }
 ToggleCommandImplicit = subject:ToggleSubject Whitespace* toggleState:("on"/"ein"/"off"/"aus"/"an") { return new ToggleCommand(undefined, subject, toggleState) }
-ToggleSubject = ("voice"/"sprache"/"sprachassistent"/"voice assistant")
+ToggleSubject = ("voice"/"sprache"/"sprachassistent"/"voice assistant"/"untertitel"/"menü"/"menu")
 
 //Select
 SelectCommand = SelectCommandExplicit/SelectCommandImplicit
