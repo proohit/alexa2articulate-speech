@@ -1,6 +1,6 @@
 
 
-Expression = (!Command ./Whitespace)* command:Command (!Command ./Whitespace)* { return command }
+Expression = (!Command Whitespace)* ("alexa"/"bibi"/"harry") (Whitespace) command:Command (!Command Whitespace)* { return command } //TODO: maybe fix whitespace logic
 
 Command = SubjectCommand / DirectCommand
 DirectCommand = NameCommand / StopCommand/CancelCommand/WaitCommand/ContinueCommand/BackCommand

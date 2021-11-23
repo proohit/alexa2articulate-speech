@@ -40,12 +40,12 @@ function startSTT() {
         recognition.onerror = function (event) {
             console.log(event);
             //This prevents stopping of the recognition
-            recognition.start();
+            player.GetVar('sttEnabled') ? recognition.start() : stopSTT();
         };
         
         recognition.onend = function (event) {
             //This prevents stopping of the recognition
-            // recognition.start();
+            player.GetVar('sttEnabled') ? recognition.start() : stopSTT();
         };
 
         recognition.start();
