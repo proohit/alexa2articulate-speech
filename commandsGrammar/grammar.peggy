@@ -4,7 +4,7 @@ Expression = (!Command Whitespace)* ("alexa"/"bibi"/"harry") (Whitespace) comman
 
 Command = SubjectCommand / DirectCommand
 DirectCommand = NameCommand / StopCommand/CancelCommand/WaitCommand/ContinueCommand/BackCommand
-SubjectCommand = NavigateCommand/ToggleCommand/SelectCommand/MediaCommand
+SubjectCommand = NavigateCommand/ToggleCommand/SelectCommand/MediaCommand/AnswerCommand
 
 //Navigate
 NavigateCommand = NavigateCommandExplicit/NavigateCommandImplicit
@@ -51,3 +51,10 @@ MediaCommandExplicit = trigger:MediaTrigger Whitespace+ subject:MediaSubject {
 MediaCommandImplicit = trigger:MediaTrigger {return new MediaCommand(trigger, undefined)}
 MediaSubject = ("video")
 MediaTrigger = ("spiele"/"spiel"/"halte"/"stop"/"pausiere"/"play"/"pause"/"pausiere"/"stoppe")
+
+// Answer
+AnswerCommand = AnswerCommandExplicit/AnswerCommandImplicit
+AnswerCommandExplicit = trigger:AnswerTrigger Whitespace+ subject:AnswerSubject { return new AnswerCommand(trigger, subject) }
+AnswerCommandImplicit = subject:AnswerSubject { return new AnswerCommand(undefined, subject) }
+AnswerSubject = ("a"/"b"/"c"/"d")
+AnswerTrigger = ("antwort")

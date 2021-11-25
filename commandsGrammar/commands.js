@@ -49,6 +49,8 @@ class SelectCommand extends Command {
 
   execute() {
     console.log(`Selecting ${this.subject}`);
+    GetPlayer().SetVar("selectSubject", this.subject);
+    GetPlayer().SetVar("selectSubject", "");
   }
 }
 class NavigateCommand extends Command {
@@ -181,5 +183,17 @@ class MediaCommand extends Command {
       GetPlayer().SetVar("video", "");
       GetPlayer().SetVar("audio", "");
     }
+  }
+}
+
+class AnswerCommand extends Command {
+  constructor(trigger, subject) {
+    super(trigger);
+    this.subject = subject;
+  }
+  execute() {
+    console.log(`Answering ${this.subject} on trigger ${this.trigger}`);
+    GetPlayer().SetVar("givenQuizAnswer", this.subject);
+    GetPlayer().SetVar("givenQuizAnswer", "");
   }
 }
