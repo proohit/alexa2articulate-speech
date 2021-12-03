@@ -48,6 +48,25 @@ class SelectCommand extends Command {
   }
 
   execute() {
+    switch (this.subject) {
+      case "eins":
+        this.subject = "1";
+        break;
+      case "zwei":
+        this.subject = "2";
+        break;
+      case "drei":
+        this.subject = "3";
+        break;
+      case "vier":
+        this.subject = "4";
+        break;
+      case "fünf":
+        this.subject = "5";
+        break;
+      default:
+        break;
+    }
     console.log(`Selecting ${this.subject}`);
     GetPlayer().SetVar("selectSubject", this.subject);
     GetPlayer().SetVar("selectSubject", "");
