@@ -36,6 +36,7 @@ function startSTT() {
       if (finalTranscript) {
         try {
           finalTranscript = finalTranscript.toLowerCase();
+          finalTranscript = removePunctuation(finalTranscript);
           console.log(finalTranscript);
           const res = peg$parse(finalTranscript);
           console.log(res);
@@ -66,6 +67,14 @@ function startSTT() {
     };
     recognition.start();
   }
+}
+
+function removePunctuation(finalTranscript) {
+  finalTranscript = finalTranscript.replace(',', '');
+  finalTranscript = finalTranscript.replace('.', '');
+  finalTranscript = finalTranscript.replace('!', '');
+  finalTranscript = finalTranscript.replace('?', '');
+  return finalTranscript;
 }
 
 function stopSTT() {
