@@ -50,7 +50,7 @@ MediaCommandExplicit = trigger:MediaTrigger Whitespace+ subject:MediaSubject {
 }
 MediaCommandImplicit = trigger:MediaTrigger {return new MediaCommand(trigger, undefined)}
 MediaSubject = ("video")
-MediaTrigger = ("spiele"/"spiel"/"halte"/"stop"/"pausiere"/"play"/"pause"/"pausiere"/"stoppe")
+MediaTrigger = ("spiele"/"spiel"/"halte"/"stoppe"/"stopp"/"stop"/"pausiere"/"play"/"pause"/"pausiere")
 
 // Answer
 AnswerCommand = AnswerCommandExplicit/AnswerCommandImplicit
