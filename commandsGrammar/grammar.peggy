@@ -1,6 +1,7 @@
 
 
-Expression = (!Command Whitespace)* ("alexa"/"bibi"/"harry") (Whitespace) command:Command (!Command Whitespace)* { return command } //TODO: maybe fix whitespace logic
+Expression = (!VoiceTrigger ./Whitespace)* VoiceTrigger (Whitespace) command:Command (!Command ./Whitespace)* { return command } //TODO: maybe fix whitespace logic
+VoiceTrigger = ("alexa"/"bibi"/"harry")
 
 Command = SubjectCommand / DirectCommand
 DirectCommand = NameCommand / StopCommand/CancelCommand/WaitCommand/ContinueCommand/BackCommand
