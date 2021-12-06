@@ -34,6 +34,7 @@ function startSTT() {
       }
 
       if (finalTranscript) {
+        player.SetVar("spokenText", finalTranscript);
         try {
           finalTranscript = finalTranscript.toLowerCase();
           finalTranscript = removePunctuation(finalTranscript);
@@ -43,6 +44,7 @@ function startSTT() {
           res.execute();
         } finally {
           finalTranscript = "";
+          player.SetVar("spokenText", "");
         }
       }
     };

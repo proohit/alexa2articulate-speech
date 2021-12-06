@@ -206,12 +206,20 @@ class MediaCommand extends Command {
 }
 
 class AnswerCommand extends Command {
-  constructor(trigger, subject) {
+  constructor(trigger, subject, state) {
     super(trigger);
     this.subject = subject;
+    this.state = state;
   }
   execute() {
-    console.log(`Answering ${this.subject} on trigger ${this.trigger}`);
+    console.log(`Answering ${this.subject} on trigger ${this.trigger} with state ${this.state}`);
+
+    if (this.state === "abwählen") {
+      GetPlayer().SetVar("unselectQuizAnswer", this.subject);
+      GetPlayer().SetVar("unselectQuizAnswer", "");
+      return;
+    }
+
     GetPlayer().SetVar("givenQuizAnswer", this.subject);
     GetPlayer().SetVar("givenQuizAnswer", "");
   }
