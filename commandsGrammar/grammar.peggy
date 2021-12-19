@@ -13,7 +13,7 @@ NavigateCommandExplicit = trigger:("navigate to"/"go to"/"navigiere zu"/"geh zu"
      return new NavigateCommand(trigger, subject) 
 }
 NavigateCommandImplicit = subject:NavigationSubject { return new NavigateCommand(undefined, subject) }
-NavigationSubject = "befehle"/"help"/"hilfe"/"recherche"/"gute wissenschaftliche praxis"/"zitieren"/"plagiieren"/"home"/"übersicht"/"start"/("sitemap"/"site map")/"impressum"/"test"
+NavigationSubject = "befehle"/"help"/"hilfe"/"recherche"/"gute wissenschaftliche praxis"/"zitieren"/"plagiieren"/"home"/"übersicht"/"start"/("sitemap"/"site map")/"impressum"/"test"/"einstellungen"
 
 StopCommand = trigger:("stoppen"/"stopp"/"stop"/"beenden") {return new StopCommand(trigger)}
 
@@ -39,7 +39,7 @@ SelectCommandExplicit = trigger:("wähle"/"selektiere"/"klicke"/"klick"/"click")
      return new SelectCommand(trigger, subject) 
 }
 SelectCommandImplicit = subject:SelectionSubject { return new SelectCommand(undefined, subject) }
-SelectionSubject = ("recherchetipps"/"recherche tipps"/"grundlagen des wissenschaftlichen arbeitens"/"suchstrategie"/"suchtools"/"qualität"/"quiz"/"videos"/"1"/"2"/"3"/"4"/"5"/"eins"/"zwei"/"drei"/"vier"/"fünf"/"bestätigen"/"alexa"/"bibi"/"harry")
+SelectionSubject = ("recherchetipps"/"recherche tipps"/"grundlagen des wissenschaftlichen arbeitens"/"suchstrategie"/"suchtools"/"qualität"/("basisfunktionen"/"basisfunktion")/"quiz"/"videos"/"1"/"2"/"3"/"4"/"5"/"eins"/"zwei"/"drei"/"vier"/"fünf"/"bestätigen"/"alexa"/"bibi"/"harry")
 
 NameCommand = trigger:("mein name ist") Whitespace+ name:Name { return new NameCommand(trigger, name.join('')) }
 Name = ([a-zA-Z]*)
@@ -51,7 +51,7 @@ MediaCommandExplicit = trigger:MediaTrigger Whitespace+ subject:MediaSubject {
 }
 MediaCommandImplicit = trigger:MediaTrigger {return new MediaCommand(trigger, undefined)}
 MediaSubject = ("video")
-MediaTrigger = ("spiele"/"spiel"/"halte"/"stoppe"/"stopp"/"stop"/"pausiere"/"play"/"pause"/"pausiere")
+MediaTrigger = ("spiele"/"spiel"/"halte"/"stoppe"/"stopp"/"stop"/"play"/"pause"/"pausiere")
 
 // Answer
 AnswerCommand = AnswerCommandExplicit/AnswerCommandImplicit

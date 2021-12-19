@@ -1,7 +1,7 @@
 let recognition = null;
 let player = GetPlayer();
 
-setTimeout(() => {
+setInterval(() => {
   if (player.GetVar("sttEnabled") && recognition !== null) {
     recognition.abort();
   }
