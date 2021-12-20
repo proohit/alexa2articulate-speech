@@ -7,7 +7,8 @@ setInterval(() => {
     recognition.stop();
   }
 }, 15000);
-const { SpeechRecognition } = WebSpeechCognitiveServices.create({
+
+const { SpeechRecognition } = window.WebSpeechCognitiveServices.create({
   credentials: {
     region: "",
     subscriptionKey: "",

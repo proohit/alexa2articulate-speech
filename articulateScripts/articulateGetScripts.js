@@ -21,27 +21,26 @@ path = path.charAt(path.length) == '/' ? path : path + '/';
 
 iterateScripts()
 
-function iterateScripts() {
+async function iterateScripts() {
     if (window.CustomSLScriptsLoaded) {
         return;
     }
 
     window.CustomSLScriptsLoaded = true;
-
     for (i; i < scripts.length; i++) {
         scripts[i] = scripts[i].trim();
-        loadScript(path + scripts[i]);
+        await loadScript(path + scripts[i]);
     }
 }
 
-function loadScript(scriptToLoad) {
-    let head = document.head || document.getElementsByTagName('head')[0];
+async function loadScript(scriptToLoad) {
+    const res = await fetch(scriptToLoad);
+    const scriptText = await res.text();
     let script = window.document.createElement('script');
-    let source = window.document.createAttribute('src');
-    source.value = scriptToLoad;
-    script.setAttributeNode(source);
-    script.onload = triggerAllScriptsLoaded();
-    head.appendChild(script);
+    script.type = 'text/javascript';
+    script.innerHTML = scriptText;
+    document.head.appendChild(script);
+    scriptsLoaded++;
 }
 
 function triggerAllScriptsLoaded() {
