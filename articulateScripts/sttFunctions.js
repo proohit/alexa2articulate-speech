@@ -6,14 +6,19 @@ setTimeout(() => {
     recognition.abort();
   }
 }, 15000);
+const { SpeechRecognition } = WebSpeechCognitiveServices.create({
+  credentials: {
+    region: "",
+    subscriptionKey: "",
+  },
+});
 
 function startSTT() {
   console.log("Start STT");
   let finalTranscript = "";
 
-  if (!("webkitSpeechRecognition" in window)) {
-  } else if (recognition == null) {
-    recognition = new webkitSpeechRecognition();
+  if (recognition == null) {
+    recognition = new SpeechRecognition();
     recognition.continuous = true;
     recognition.lang = "de-de";
     recognition.continuous = true;
@@ -72,10 +77,10 @@ function startSTT() {
 }
 
 function removePunctuation(finalTranscript) {
-  finalTranscript = finalTranscript.replace(',', '');
-  finalTranscript = finalTranscript.replace('.', '');
-  finalTranscript = finalTranscript.replace('!', '');
-  finalTranscript = finalTranscript.replace('?', '');
+  finalTranscript = finalTranscript.replace(",", "");
+  finalTranscript = finalTranscript.replace(".", "");
+  finalTranscript = finalTranscript.replace("!", "");
+  finalTranscript = finalTranscript.replace("?", "");
   return finalTranscript;
 }
 
