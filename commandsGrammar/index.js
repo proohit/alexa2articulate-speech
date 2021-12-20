@@ -26,16 +26,16 @@ recognition = new SpeechRecognition();
 recognition.lang = "de-de";
 recognition.continuous = true;
 recognition.interimResults = true;
+let resultIndex = 0;
 recognition.onresult = function (event) {
   let interim_transcript = "";
 
-  // TODO: We need to use resultIndex here somehow or at least work around it. resultIndex is to track the current result in `event.results` since that object contains all the results.
-
-  for (const result of event.results) {
-    if (result.isFinal) {
-      finalTranscript += result[0].transcript;
+  for (let i = resultIndex; i < event.results.length; i++) {
+    if (event.results[i].isFinal) {
+      resultIndex++;
+      finalTranscript += event.results[i][0].transcript;
     } else {
-      interim_transcript += result[0].transcript;
+      interim_transcript += event.results[i][0].transcript;
     }
   }
 
