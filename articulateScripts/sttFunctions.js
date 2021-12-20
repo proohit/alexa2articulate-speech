@@ -14,7 +14,7 @@ const { SpeechRecognition } = WebSpeechCognitiveServices.create({
   },
 });
 
-document.addEventListener('keydown', (event) => {
+document.addEventListener("keydown", (event) => {
   if (event.code === "Space") {
     if (!spaceBarPressed) {
       spaceBarPressed = true;
@@ -24,7 +24,7 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
-document.addEventListener('keyup', (event) => {
+document.addEventListener("keyup", (event) => {
   if (event.code === "Space") {
     spaceBarPressed = false;
     player.SetVar("sttIsActive", false);
@@ -42,20 +42,24 @@ function startSTT() {
     recognition.lang = "de-de";
     recognition.continuous = true;
     recognition.interimResults = true;
-
+    let resultIndex = 0;
     recognition.onresult = function (event) {
       const assistantName = player.GetVar("assistantName").toLowerCase();
       var interimTranscript = "";
 
-      for (var i = event.resultIndex; i < event.results.length; ++i) {
+      for (var i = resultIndex; i < event.results.length; ++i) {
         if (event.results[i].isFinal) {
+          resultIndex++;
           finalTranscript += event.results[i][0].transcript;
         } else {
           interimTranscript += event.results[i][0].transcript;
         }
       }
 
-      if (interimTranscript && interimTranscript.toLowerCase().includes(assistantName)) {
+      if (
+        interimTranscript &&
+        interimTranscript.toLowerCase().includes(assistantName)
+      ) {
         player.SetVar("sttIsActive", true);
         player.SetVar("spokenText", interimTranscript);
       }
