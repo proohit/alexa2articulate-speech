@@ -110,20 +110,28 @@ const dictateService = new DictateService();
 let textDataBase = "";
 let textData = "";
 let buttonText = "Start Recognition";
-
+let results = [];
+let currentIndex = 0;
 function startButton() {
   if (!dictateService.isInitialized()) {
     dictateService.init({
       server: "ws://0.0.0.0:2700/",
       onResults: (hyp) => {
         console.log(hyp);
-
         textDataBase = textDataBase + hyp + "\n";
-        textData = textDataBase;
+        results.push(hyp);
+        document.getElementById(
+          "final"
+        ).innerText = `FINAL RESULTS: ${results.join("\n")}`;
+        currentIndex++;
+        textDataBase = "";
+        textData = "";
+        document.getElementById("interim").innerText = textData;
       },
       onPartialResults: (hyp) => {
         console.log(hyp);
         textData = textDataBase + hyp;
+        document.getElementById("interim").innerText = textData;
       },
       onError: (code, data) => {
         console.log(code, data);
