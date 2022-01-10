@@ -2,12 +2,6 @@ let recognition = null;
 let player = GetPlayer();
 let spaceBarPressed = false;
 
-setInterval(() => {
-  if (player.GetVar("sttEnabled") && recognition !== null) {
-    recognition.stop();
-  }
-}, 15000);
-
 document.addEventListener("keydown", (event) => {
   if (event.code === "Space") {
     if (!spaceBarPressed) {
