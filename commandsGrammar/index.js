@@ -110,7 +110,7 @@ let textDataBase = "";
 let textData = "";
 let results = [];
 let currentIndex = 0;
-let recognizer = null;
+var recognizer = null;
 
 async function startButton() {
   if (recognizer === null) {
@@ -122,13 +122,93 @@ async function startButton() {
 
     const sampleRate = 48000;
 
-    const recognizer = new model.KaldiRecognizer(sampleRate);
+    recognizer = new model.KaldiRecognizer(
+      sampleRate,
+      JSON.stringify([
+        "alexa",
+        "bibi",
+        "harry",
+        "navigate",
+        "to",
+        "geh",
+        "gehe",
+        "befehle",
+        "hilfe",
+        "weiter",
+        "zurück",
+        "navigiere",
+        "zu",
+        "recherche",
+        "test",
+        "on",
+        "ein",
+        "off",
+        "schalte",
+        "turn",
+        "voice",
+        "sprache",
+        "wähle",
+        "selektiere",
+        "klicke",
+        "klick",
+        "site map",
+        "sprach assistent",
+        "recherche tipps",
+        "grundlagen des wissenschaftlichen arbeitens",
+        "basis funktionen",
+        "such tools",
+        "such strategie",
+        "qualität",
+        "a",
+        "b",
+        "c",
+        "d",
+        "eins",
+        "zwei",
+        "drei",
+        "vier",
+        "fünf",
+        "bestätigen",
+        "quiz",
+        "videos",
+        "video",
+        "spiele",
+        "spiel",
+        "halte",
+        "stoppe",
+        "stop",
+        "play",
+        "pause",
+        "pausiere",
+        "antwort",
+        "auswählen",
+        "abwählen",
+        "einstellungen",
+        "impressum",
+        "abbrechen",
+        "beenden",
+        "stoppen",
+        "wechsle zu",
+      ])
+    );
     recognizer.setWords(true);
+    console.log(recognizer);
 
     recognizer.on("result", (message) => {
       const result = message.result;
       const hyp = result.text;
-      console.log(hyp);
+      if (!hyp) {
+        return;
+      }
+      let score = 0;
+      for (const res of result.result) {
+        score += res.conf;
+      }
+      score /= result.result.length;
+      console.log(`${score} on ${hyp}`);
+      if (Number.isNaN(score) || score < 0.9) {
+        return;
+      }
       textDataBase = textDataBase + hyp + "\n";
       results.push(hyp);
       document.getElementById(
@@ -141,7 +221,6 @@ async function startButton() {
     });
     recognizer.on("partialresult", (message) => {
       const hyp = message.result.partial;
-      console.log(hyp);
       textData = textDataBase + hyp;
       document.getElementById("interim").innerText = textData;
     });
