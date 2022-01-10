@@ -1,14 +1,8 @@
-let recognition = null;
+let recognizer = null;
 let player = GetPlayer();
 let spaceBarPressed = false;
 
-setInterval(() => {
-  if (player.GetVar("sttEnabled") && recognition !== null) {
-    recognition.stop();
-  }
-}, 15000);
-
-document.addEventListener('keydown', (event) => {
+document.addEventListener("keydown", (event) => {
   if (event.code === "Space") {
     if (!spaceBarPressed) {
       spaceBarPressed = true;
@@ -18,7 +12,7 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
-document.addEventListener('keyup', (event) => {
+document.addEventListener("keyup", (event) => {
   if (event.code === "Space") {
     spaceBarPressed = false;
     player.SetVar("sttIsActive", false);
@@ -26,88 +20,170 @@ document.addEventListener('keyup', (event) => {
   }
 });
 
-function startSTT() {
-  console.log("Start STT");
-  let finalTranscript = "";
+async function startSTT() {
+  let textDataBase = "";
+  let textData = "";
+  let results = [];
+  let currentIndex = 0;
+  if (recognizer === null) {
+    const channel = new MessageChannel();
+    const model = await Vosk.createModel(
+      "commandsGrammar/vosk-model-small-de-0.15.tar.gz"
+    );
+    model.registerPort(channel.port1);
 
-  if (!("webkitSpeechRecognition" in window)) {
-  } else if (recognition == null) {
-    recognition = new webkitSpeechRecognition();
-    recognition.continuous = true;
-    recognition.lang = "de-de";
-    recognition.continuous = true;
-    recognition.interimResults = true;
+    const sampleRate = 48000;
 
-    recognition.onresult = function (event) {
+    recognizer = new model.KaldiRecognizer(
+      sampleRate,
+      JSON.stringify([
+        "alexa",
+        "bibi",
+        "harry",
+        "navigate",
+        "to",
+        "geh",
+        "gehe",
+        "befehle",
+        "hilfe",
+        "weiter",
+        "zurück",
+        "navigiere",
+        "zu",
+        "recherche",
+        "test",
+        "on",
+        "ein",
+        "off",
+        "schalte",
+        "turn",
+        "voice",
+        "sprache",
+        "wähle",
+        "selektiere",
+        "klicke",
+        "klick",
+        "site map",
+        "sprach assistent",
+        "recherche tipps",
+        "grundlagen des wissenschaftlichen arbeitens",
+        "basis funktionen",
+        "such tools",
+        "such strategie",
+        "qualität",
+        "a",
+        "b",
+        "c",
+        "d",
+        "eins",
+        "zwei",
+        "drei",
+        "vier",
+        "fünf",
+        "bestätigen",
+        "quiz",
+        "videos",
+        "video",
+        "spiele",
+        "spiel",
+        "halte",
+        "stoppe",
+        "stop",
+        "play",
+        "pause",
+        "pausiere",
+        "antwort",
+        "auswählen",
+        "abwählen",
+        "einstellungen",
+        "impressum",
+        "abbrechen",
+        "beenden",
+        "stoppen",
+        "wechsle zu",
+      ])
+    );
+    recognizer.setWords(true);
+    recognizer.on("result", (message) => {
       const assistantName = player.GetVar("assistantName").toLowerCase();
-      var interimTranscript = "";
-
-      for (var i = event.resultIndex; i < event.results.length; ++i) {
-        if (event.results[i].isFinal) {
-          finalTranscript += event.results[i][0].transcript;
-        } else {
-          interimTranscript += event.results[i][0].transcript;
-        }
+      const result = message.result;
+      const hyp = result.text;
+      if (!hyp) {
+        return;
       }
-
-      if (interimTranscript && interimTranscript.toLowerCase().includes(assistantName)) {
+      let score = 0;
+      for (const res of result.result) {
+        score += res.conf;
+      }
+      score /= result.result.length;
+      console.log(`${score} on ${hyp}`);
+      if (Number.isNaN(score) || score < 0.9) {
+        return;
+      }
+      try {
+        if (hyp.toLowerCase().includes(assistantName)) {
+          player.SetVar("spokenText", hyp);
+          hyp = hyp.toLowerCase();
+          hyp = removePunctuation(hyp);
+          console.log(hyp);
+          const res = peg$parse(hyp);
+          console.log(res);
+          res.execute();
+        }
+      } finally {
+        player.SetVar("spokenText", "");
+        player.SetVar("sttIsActive", false);
+      }
+    });
+    recognizer.on("partialresult", (message) => {
+      const hyp = message.result.partial;
+      const assistantName = player.GetVar("assistantName").toLowerCase();
+      if (hyp && hyp.toLowerCase().includes(assistantName)) {
         player.SetVar("sttIsActive", true);
-        player.SetVar("spokenText", interimTranscript);
+        player.SetVar("spokenText", hyp);
       }
+    });
 
-      if (finalTranscript) {
-        try {
-          if (finalTranscript.toLowerCase().includes(assistantName)) {
-            player.SetVar("spokenText", finalTranscript);
-            finalTranscript = finalTranscript.toLowerCase();
-            finalTranscript = removePunctuation(finalTranscript);
-            console.log(finalTranscript);
-            const res = peg$parse(finalTranscript);
-            console.log(res);
-            res.execute();
-          }
-        } finally {
-          finalTranscript = "";
-          player.SetVar("spokenText", "");
-          player.SetVar("sttIsActive", false);
-        }
-      }
-    };
+    const mediaStream = await navigator.mediaDevices.getUserMedia({
+      video: false,
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        channelCount: 1,
+        sampleRate,
+      },
+    });
 
-    recognition.onerror = function (event) {
-      console.log(event);
-      //This prevents stopping of the recognition
-      recognition.stop();
-      if (player.GetVar("sttEnabled")) {
-        recognition.start();
-      }
-    };
+    const audioContext = new AudioContext();
+    await audioContext.audioWorklet.addModule("recognizer-processor.js");
+    const recognizerProcessor = new AudioWorkletNode(
+      audioContext,
+      "recognizer-processor",
+      { channelCount: 1, numberOfInputs: 1, numberOfOutputs: 1 }
+    );
+    recognizerProcessor.port.postMessage(
+      { action: "init", recognizerId: recognizer.id },
+      [channel.port2]
+    );
+    recognizerProcessor.connect(audioContext.destination);
 
-    recognition.onend = function (event) {
-      console.log(event);
-      //This prevents stopping of the recognition
-      if (player.GetVar("sttEnabled")) {
-        recognition.start();
-      } else {
-        stopSTT();
-      }
-    };
-    recognition.start();
+    const source = audioContext.createMediaStreamSource(mediaStream);
+    source.connect(recognizerProcessor);
   }
 }
 
 function removePunctuation(finalTranscript) {
-  finalTranscript = finalTranscript.replace(',', '');
-  finalTranscript = finalTranscript.replace('.', '');
-  finalTranscript = finalTranscript.replace('!', '');
-  finalTranscript = finalTranscript.replace('?', '');
+  finalTranscript = finalTranscript.replace(",", "");
+  finalTranscript = finalTranscript.replace(".", "");
+  finalTranscript = finalTranscript.replace("!", "");
+  finalTranscript = finalTranscript.replace("?", "");
   return finalTranscript;
 }
 
 function stopSTT() {
   console.log("Stop STT");
-  if (recognition) {
-    recognition.stop();
-    recognition = null;
+  if (recognizer) {
+    recognizer.terminate();
+    recognizer = null;
   }
 }
