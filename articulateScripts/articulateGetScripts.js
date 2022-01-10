@@ -21,26 +21,27 @@ path = path.charAt(path.length) == '/' ? path : path + '/';
 
 iterateScripts()
 
-async function iterateScripts() {
+function iterateScripts() {
     if (window.CustomSLScriptsLoaded) {
         return;
     }
 
     window.CustomSLScriptsLoaded = true;
+
     for (i; i < scripts.length; i++) {
         scripts[i] = scripts[i].trim();
-        await loadScript(path + scripts[i]);
+        loadScript(path + scripts[i]);
     }
 }
 
-async function loadScript(scriptToLoad) {
-    const res = await fetch(scriptToLoad);
-    const scriptText = await res.text();
+function loadScript(scriptToLoad) {
+    let head = document.head || document.getElementsByTagName('head')[0];
     let script = window.document.createElement('script');
-    script.type = 'text/javascript';
-    script.innerHTML = scriptText;
-    document.head.appendChild(script);
-    scriptsLoaded++;
+    let source = window.document.createAttribute('src');
+    source.value = scriptToLoad;
+    script.setAttributeNode(source);
+    script.onload = triggerAllScriptsLoaded();
+    head.appendChild(script);
 }
 
 function triggerAllScriptsLoaded() {
@@ -55,4 +56,4 @@ function setScriptsImported() {
     setTimeout(function () {
         player.SetVar("scriptsImported", true);
     }, 2000);
-}
+} 

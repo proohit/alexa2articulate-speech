@@ -8,13 +8,6 @@ setInterval(() => {
   }
 }, 15000);
 
-const { SpeechRecognition } = window.WebSpeechCognitiveServices.create({
-  credentials: {
-    region: "",
-    subscriptionKey: "",
-  },
-});
-
 document.addEventListener("keydown", (event) => {
   if (event.code === "Space") {
     if (!spaceBarPressed) {
@@ -35,6 +28,12 @@ document.addEventListener("keyup", (event) => {
 
 function startSTT() {
   console.log("Start STT");
+  const { SpeechRecognition } = window.WebSpeechCognitiveServices.create({
+    credentials: {
+      region: "germanywestcentral",
+      subscriptionKey: "55df12a011e64a6fbd7133c84df2e7be",
+    },
+  });
   let finalTranscript = "";
 
   if (recognition == null) {
