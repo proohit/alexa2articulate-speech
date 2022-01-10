@@ -1,3 +1,5 @@
+const SCRIPTS_PATH_VAR = 'scriptsPath';
+
 let recognizer = null;
 let player = GetPlayer();
 let spaceBarPressed = false;
@@ -28,7 +30,7 @@ async function startSTT() {
   if (recognizer === null) {
     const channel = new MessageChannel();
     const model = await Vosk.createModel(
-      "commandsGrammar/vosk-model-small-de-0.15.tar.gz"
+      "11-01-22-vosk-browser/" + player.GetVar(SCRIPTS_PATH_VAR) + "/vosk-model-small-de-0.15.tar.gz"
     );
     model.registerPort(channel.port1);
 
@@ -107,7 +109,7 @@ async function startSTT() {
     recognizer.on("result", (message) => {
       const assistantName = player.GetVar("assistantName").toLowerCase();
       const result = message.result;
-      const hyp = result.text;
+      let hyp = result.text;
       if (!hyp) {
         return;
       }
@@ -155,7 +157,7 @@ async function startSTT() {
     });
 
     const audioContext = new AudioContext();
-    await audioContext.audioWorklet.addModule("recognizer-processor.js");
+    await audioContext.audioWorklet.addModule(player.GetVar(SCRIPTS_PATH_VAR) + "/recognizer-processor.js");
     const recognizerProcessor = new AudioWorkletNode(
       audioContext,
       "recognizer-processor",
