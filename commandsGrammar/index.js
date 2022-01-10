@@ -106,46 +106,70 @@ document
 // let finalTranscript = "";
 // let started = false;
 
-const dictateService = new DictateService();
 let textDataBase = "";
 let textData = "";
-let buttonText = "Start Recognition";
 let results = [];
 let currentIndex = 0;
-function startButton() {
-  if (!dictateService.isInitialized()) {
-    dictateService.init({
-      server: "ws://0.0.0.0:2700/",
-      onResults: (hyp) => {
-        console.log(hyp);
-        textDataBase = textDataBase + hyp + "\n";
-        results.push(hyp);
-        document.getElementById(
-          "final"
-        ).innerText = `FINAL RESULTS: ${results.join("\n")}`;
-        currentIndex++;
-        textDataBase = "";
-        textData = "";
-        document.getElementById("interim").innerText = textData;
-      },
-      onPartialResults: (hyp) => {
-        console.log(hyp);
-        textData = textDataBase + hyp;
-        document.getElementById("interim").innerText = textData;
-      },
-      onError: (code, data) => {
-        console.log(code, data);
-      },
-      onEvent: (code, data) => {
-        console.log(code, data);
+let recognizer = null;
+
+async function startButton() {
+  if (recognizer === null) {
+    const channel = new MessageChannel();
+    const model = await Vosk.createModel(
+      "commandsGrammar/vosk-model-small-de-0.15.tar.gz"
+    );
+    model.registerPort(channel.port1);
+
+    const sampleRate = 48000;
+
+    const recognizer = new model.KaldiRecognizer(sampleRate);
+    recognizer.setWords(true);
+
+    recognizer.on("result", (message) => {
+      const result = message.result;
+      const hyp = result.text;
+      console.log(hyp);
+      textDataBase = textDataBase + hyp + "\n";
+      results.push(hyp);
+      document.getElementById(
+        "final"
+      ).innerText = `FINAL RESULTS: ${results.join("\n")}`;
+      currentIndex++;
+      textDataBase = "";
+      textData = "";
+      document.getElementById("interim").innerText = textData;
+    });
+    recognizer.on("partialresult", (message) => {
+      const hyp = message.result.partial;
+      console.log(hyp);
+      textData = textDataBase + hyp;
+      document.getElementById("interim").innerText = textData;
+    });
+
+    const mediaStream = await navigator.mediaDevices.getUserMedia({
+      video: false,
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        channelCount: 1,
+        sampleRate,
       },
     });
-    buttonText = "Stop Recognition";
-  } else if (dictateService.isRunning()) {
-    dictateService.resume();
-    buttonText = "Stop Recognition";
-  } else {
-    dictateService.pause();
-    buttonText = "Start Recognition";
+
+    const audioContext = new AudioContext();
+    await audioContext.audioWorklet.addModule("recognizer-processor.js");
+    const recognizerProcessor = new AudioWorkletNode(
+      audioContext,
+      "recognizer-processor",
+      { channelCount: 1, numberOfInputs: 1, numberOfOutputs: 1 }
+    );
+    recognizerProcessor.port.postMessage(
+      { action: "init", recognizerId: recognizer.id },
+      [channel.port2]
+    );
+    recognizerProcessor.connect(audioContext.destination);
+
+    const source = audioContext.createMediaStreamSource(mediaStream);
+    source.connect(recognizerProcessor);
   }
 }
