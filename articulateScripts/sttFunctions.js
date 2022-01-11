@@ -103,6 +103,8 @@ async function startSTT() {
         "beenden",
         "stoppen",
         "wechsle zu",
+        "untertitel",
+        "menü",
       ])
     );
     recognizer.setWords(true);
