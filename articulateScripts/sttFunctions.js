@@ -1,4 +1,4 @@
-const SCRIPTS_PATH_VAR = 'scriptsPath';
+const SCRIPTS_PATH_VAR = "scriptsPath";
 
 let recognizer = null;
 let player = GetPlayer();
@@ -22,16 +22,13 @@ document.addEventListener("keyup", (event) => {
   }
 });
 
+const modelFilename = "/vosk-model-small-de-0.15.tar.gz";
+const globalPath = "11-01-22-vosk-browser/" + player.GetVar(SCRIPTS_PATH_VAR);
+
 async function startSTT() {
-  let textDataBase = "";
-  let textData = "";
-  let results = [];
-  let currentIndex = 0;
   if (recognizer === null) {
     const channel = new MessageChannel();
-    const model = await Vosk.createModel(
-      "11-01-22-vosk-browser/" + player.GetVar(SCRIPTS_PATH_VAR) + "/vosk-model-small-de-0.15.tar.gz"
-    );
+    const model = await Vosk.createModel(globalPath + modelFilename);
     model.registerPort(channel.port1);
 
     const sampleRate = 48000;
@@ -159,7 +156,9 @@ async function startSTT() {
     });
 
     const audioContext = new AudioContext();
-    await audioContext.audioWorklet.addModule(player.GetVar(SCRIPTS_PATH_VAR) + "/recognizer-processor.js");
+    await audioContext.audioWorklet.addModule(
+      player.GetVar(SCRIPTS_PATH_VAR) + "/recognizer-processor.js"
+    );
     const recognizerProcessor = new AudioWorkletNode(
       audioContext,
       "recognizer-processor",
