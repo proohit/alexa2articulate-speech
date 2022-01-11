@@ -52,6 +52,8 @@ async function startSTT() {
         "recherche",
         "test",
         "on",
+        "an",
+        "aus",
         "ein",
         "off",
         "schalte",
