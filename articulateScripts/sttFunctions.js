@@ -25,87 +25,19 @@ document.addEventListener("keyup", (event) => {
 const modelFilename = "/vosk-model-small-de-0.15.tar.gz";
 const globalPath = "11-01-22-vosk-browser/" + player.GetVar(SCRIPTS_PATH_VAR);
 
+let wordList;
+
 async function startSTT() {
   if (recognizer === null) {
     const channel = new MessageChannel();
     const model = await Vosk.createModel(globalPath + modelFilename);
+    if (!wordList) {
+      wordList = await (await fetch("wordlist.json")).json();
+    }
     model.registerPort(channel.port1);
 
     const sampleRate = 48000;
-
-    recognizer = new model.KaldiRecognizer(
-      sampleRate,
-      JSON.stringify([
-        "alexa",
-        "bibi",
-        "harry",
-        "navigate",
-        "to",
-        "geh",
-        "gehe",
-        "befehle",
-        "hilfe",
-        "weiter",
-        "zurück",
-        "navigiere",
-        "zu",
-        "recherche",
-        "test",
-        "on",
-        "an",
-        "aus",
-        "ein",
-        "off",
-        "schalte",
-        "turn",
-        "voice",
-        "sprache",
-        "wähle",
-        "selektiere",
-        "klicke",
-        "klick",
-        "site map",
-        "sprach assistent",
-        "recherche tipps",
-        "grundlagen des wissenschaftlichen arbeitens",
-        "basis funktionen",
-        "such tools",
-        "such strategie",
-        "qualität",
-        "a",
-        "b",
-        "c",
-        "d",
-        "eins",
-        "zwei",
-        "drei",
-        "vier",
-        "fünf",
-        "bestätigen",
-        "quiz",
-        "videos",
-        "video",
-        "spiele",
-        "spiel",
-        "halte",
-        "stoppe",
-        "stop",
-        "play",
-        "pause",
-        "pausiere",
-        "antwort",
-        "auswählen",
-        "abwählen",
-        "einstellungen",
-        "impressum",
-        "abbrechen",
-        "beenden",
-        "stoppen",
-        "wechsle zu",
-        "untertitel",
-        "menü",
-      ])
-    );
+    recognizer = new model.KaldiRecognizer(sampleRate, wordList);
     recognizer.setWords(true);
     recognizer.on("result", (message) => {
       const assistantName = player.GetVar("assistantName").toLowerCase();

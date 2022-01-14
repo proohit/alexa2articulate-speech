@@ -1,5 +1,4 @@
 // import { parse } from "../articulateScripts/grammar.js";
-import { DictateService } from "./dictate-service.js";
 // let recognition;
 // let debug = true;
 document
@@ -112,85 +111,22 @@ let results = [];
 let currentIndex = 0;
 var recognizer = null;
 
+let wordList;
+
 async function startButton() {
   if (recognizer === null) {
     const channel = new MessageChannel();
     const model = await Vosk.createModel(
       "commandsGrammar/vosk-model-small-de-0.15.tar.gz"
     );
+    if (!wordList) {
+      wordList = await (await fetch("wordlist.json")).text();
+    }
     model.registerPort(channel.port1);
 
     const sampleRate = 48000;
 
-    recognizer = new model.KaldiRecognizer(
-      sampleRate,
-      JSON.stringify([
-        "alexa",
-        "bibi",
-        "harry",
-        "navigate",
-        "to",
-        "geh",
-        "gehe",
-        "befehle",
-        "hilfe",
-        "weiter",
-        "zurück",
-        "navigiere",
-        "zu",
-        "recherche",
-        "test",
-        "on",
-        "ein",
-        "off",
-        "schalte",
-        "turn",
-        "voice",
-        "sprache",
-        "wähle",
-        "selektiere",
-        "klicke",
-        "klick",
-        "site map",
-        "sprach assistent",
-        "recherche tipps",
-        "grundlagen des wissenschaftlichen arbeitens",
-        "basis funktionen",
-        "such tools",
-        "such strategie",
-        "qualität",
-        "a",
-        "b",
-        "c",
-        "d",
-        "eins",
-        "zwei",
-        "drei",
-        "vier",
-        "fünf",
-        "bestätigen",
-        "quiz",
-        "videos",
-        "video",
-        "spiele",
-        "spiel",
-        "halte",
-        "stoppe",
-        "stop",
-        "play",
-        "pause",
-        "pausiere",
-        "antwort",
-        "auswählen",
-        "abwählen",
-        "einstellungen",
-        "impressum",
-        "abbrechen",
-        "beenden",
-        "stoppen",
-        "wechsle zu",
-      ])
-    );
+    recognizer = new model.KaldiRecognizer(sampleRate, wordList);
     recognizer.setWords(true);
     console.log(recognizer);
 
