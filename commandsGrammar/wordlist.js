@@ -1,4 +1,4 @@
-[
+window.SPEECH_WORDLIST = [
   "alexa",
   "bibi",
   "harry",
@@ -66,5 +66,5 @@
   "stoppen",
   "wechsle zu",
   "untertitel",
-  "menü"
-]
+  "menü",
+];

@@ -104,6 +104,19 @@ document
 
 // let finalTranscript = "";
 // let started = false;
+function downloadScript(url) {
+  return new Promise((resolve, reject) => {
+    var script = document.createElement("script");
+    script.src = url;
+    script.onload = resolve;
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
+}
+
+(async function () {
+  await downloadScript("config.js");
+})();
 
 let textDataBase = "";
 let textData = "";
@@ -111,24 +124,20 @@ let results = [];
 let currentIndex = 0;
 var recognizer = null;
 
-let wordList;
-
 async function startButton() {
   if (recognizer === null) {
     const channel = new MessageChannel();
-    const model = await Vosk.createModel(
-      "commandsGrammar/vosk-model-small-de-0.15.tar.gz"
-    );
-    if (!wordList) {
-      wordList = await (await fetch("wordlist.json")).text();
-    }
+    const model = await Vosk.createModel(SPEECH_CONFIG.modelPath);
+    await downloadScript(SPEECH_CONFIG.wordlistPath);
     model.registerPort(channel.port1);
 
     const sampleRate = 48000;
 
-    recognizer = new model.KaldiRecognizer(sampleRate, wordList);
+    recognizer = new model.KaldiRecognizer(
+      sampleRate,
+      JSON.stringify(SPEECH_WORDLIST)
+    );
     recognizer.setWords(true);
-    console.log(recognizer);
 
     recognizer.on("result", (message) => {
       const result = message.result;
