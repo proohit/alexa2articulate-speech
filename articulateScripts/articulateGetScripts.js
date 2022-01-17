@@ -32,6 +32,18 @@ function iterateScripts() {
         scripts[i] = scripts[i].trim();
         loadScript(path + scripts[i]);
     }
+    loadCss(path + "captions.css");
+}
+
+function loadCss(cssToLoad) {
+  let head = document.head || document.getElementsByTagName("head")[0];
+  let link = window.document.createElement("link");
+  let source = window.document.createAttribute("href");
+  source.value = cssToLoad;
+  link.setAttributeNode(source);
+  link.setAttribute("rel", "stylesheet");
+  link.setAttribute("type", "text/css");
+  head.appendChild(link);
 }
 
 function loadScript(scriptToLoad) {
