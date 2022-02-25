@@ -28,7 +28,7 @@ let wordlist;
 async function startSTT() {
   if (recognizer === null) {
     const channel = new MessageChannel();
-    const model = await getModel();
+    const model = await Vosk.createModel(SPEECH_CONFIG.modelPath);
     model.registerPort(channel.port1);
 
     const sampleRate = 48000;
@@ -89,7 +89,7 @@ async function startSTT() {
 
     const audioContext = new AudioContext();
     await audioContext.audioWorklet.addModule(
-      player.GetVar(SCRIPTS_PATH_VAR) + "/recognizer-processor.js"
+      SPEECH_CONFIG.recognizerProcessorPath
     );
     const recognizerProcessor = new AudioWorkletNode(
       audioContext,
@@ -104,22 +104,6 @@ async function startSTT() {
 
     const source = audioContext.createMediaStreamSource(mediaStream);
     source.connect(recognizerProcessor);
-  }
-}
-
-async function getWordlist() {
-  if (!SPEECH_CONFIG.wordlistPath) {
-    return (await fetch(scriptsPath + "/wordlist.json")).json();
-  } else {
-    return (await fetch(SPEECH_CONFIG.wordlistPath)).json();
-  }
-}
-
-async function getModel() {
-  if (!SPEECH_CONFIG.modelPath) {
-    return Vosk.createModel(scriptsPath + "/vosk-model-small-de-0.15.tar.gz");
-  } else {
-    return Vosk.createModel(SPEECH_CONFIG.modelPath);
   }
 }
 

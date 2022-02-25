@@ -70,6 +70,12 @@ async function loadConfig() {
   } else {
     await loadScript(path + WORDLIST_NAME);
   }
+  if (!SPEECH_CONFIG.recognizerProcessorPath) {
+    SPEECH_CONFIG.recognizerProcessorPath = path + "recognizer-processor.js";
+  }
+  if (!SPEECH_CONFIG.modelPath) {
+    SPEECH_CONFIG.modelPath = path + "vosk-model-small-de-0.15.tar.gz";
+  }
 }
 
 function triggerAllScriptsLoaded() {
