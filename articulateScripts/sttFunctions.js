@@ -1,29 +1,41 @@
 let recognizer = null;
-let player = GetPlayer();
+const player = GetPlayer();
 let spaceBarPressed = false;
 
+let activeGrammar = "named";
+let grammar;
+const grammarCache = { named: "", unnamed: "" };
+loadGrammar(activeGrammar).then((g) => (grammar = g));
+
 document.addEventListener("keydown", (event) => {
-  if (event.code === "Space") {
+  if (
+    event[SPEECH_CONFIG.pushToTalkCombination.modifier] &&
+    event.key === SPEECH_CONFIG.pushToTalkCombination.key
+  ) {
     if (!spaceBarPressed) {
       spaceBarPressed = true;
-      player.SetVar("sttEnabled", true);
+      activeGrammar = "unnamed";
+      loadGrammar(activeGrammar).then((g) => (grammar = g));
       player.SetVar("sttIsActive", true);
+      player.SetVar("sttEnabled", true);
     }
   }
 });
 
 document.addEventListener("keyup", (event) => {
-  if (event.code === "Space") {
+  if (
+    event[SPEECH_CONFIG.pushToTalkCombination.modifier] &&
+    event.key === SPEECH_CONFIG.pushToTalkCombination.key
+  ) {
     spaceBarPressed = false;
-    player.SetVar("sttIsActive", false);
+    activeGrammar = "named";
+    loadGrammar(activeGrammar).then((g) => (grammar = g));
     player.SetVar("sttEnabled", false);
+    player.SetVar("sttIsActive", false);
   }
 });
 
-let wordlist;
-
 async function startSTT() {
-  const grammar = await loadGrammar();
   if (recognizer === null) {
     const channel = new MessageChannel();
     const model = await Vosk.createModel(SPEECH_CONFIG.modelPath);
@@ -52,7 +64,10 @@ async function startSTT() {
         return;
       }
       try {
-        if (hyp.toLowerCase().includes(assistantName)) {
+        if (
+          hyp.toLowerCase().includes(assistantName) ||
+          activeGrammar === "unnamed"
+        ) {
           player.SetVar("spokenText", hyp);
           hyp = hyp.toLowerCase();
           hyp = removePunctuation(hyp);
@@ -67,7 +82,11 @@ async function startSTT() {
     recognizer.on("partialresult", (message) => {
       const hyp = message.result.partial;
       const assistantName = player.GetVar("assistantName").toLowerCase();
-      if (hyp && hyp.toLowerCase().includes(assistantName)) {
+      if (
+        hyp &&
+        (hyp.toLowerCase().includes(assistantName) ||
+          activeGrammar === "unnamed")
+      ) {
         player.SetVar("sttIsActive", true);
         player.SetVar("spokenText", hyp);
       }
@@ -103,9 +122,14 @@ async function startSTT() {
   }
 }
 
-async function loadGrammar() {
-  const rawGrammar = await (await fetch(SPEECH_CONFIG.grammarPath)).text();
-  return peggy.generate(rawGrammar);
+async function loadGrammar(grammarType) {
+  console.log("Loading grammar ", grammarType);
+  if (!grammarCache[grammarType]) {
+    grammarCache[grammarType] = await (
+      await fetch(SPEECH_CONFIG.grammarPath[grammarType])
+    ).text();
+  }
+  return peggy.generate(grammarCache[grammarType]);
 }
 
 function removePunctuation(finalTranscript) {

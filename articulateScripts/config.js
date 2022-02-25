@@ -1,8 +1,13 @@
 window.SPEECH_CONFIG = {
   modelPath:
     "http://localhost:5500/story_content/WebObjects/6BjXAZJpixW/vosk-model-small-de-0.15.tar.gz",
-  grammarPath:
-    "http://localhost:5500/story_content/WebObjects/6BjXAZJpixW/grammar.peggy",
+  pushToTalkCombination: { modifier: "ctrlKey", key: "v" },
+  grammarPath: {
+    named:
+      "http://localhost:5500/story_content/WebObjects/6BjXAZJpixW/grammar.peggy",
+    unnamed:
+      "http://localhost:5500/story_content/WebObjects/6BjXAZJpixW/grammar-unnamed.peggy",
+  },
   peggyPath:
     "http://localhost:5500/story_content/WebObjects/6BjXAZJpixW/peggy.min.js",
   wordlistPath:
