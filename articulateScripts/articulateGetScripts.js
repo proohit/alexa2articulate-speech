@@ -83,10 +83,13 @@ async function loadConfig() {
     SPEECH_CONFIG.modelPath = path + "vosk-model-small-de-0.15.tar.gz";
   }
   if (!SPEECH_CONFIG.grammarPath) {
-    SPEECH_CONFIG.grammarPath = {
-      named: path + "grammar.peggy",
-      unnamed: path + "grammar-unnamed.peggy",
-    };
+    SPEECH_CONFIG.grammarPath = {};
+  }
+  if (!SPEECH_CONFIG.grammarPath.named) {
+    SPEECH_CONFIG.grammarPath.named = path + "grammar.peggy";
+  }
+  if (!SPEECH_CONFIG.grammarPath.unnamed) {
+    SPEECH_CONFIG.grammarPath.unnamed = path + "grammar-unnamed.peggy";
   }
   if (!SPEECH_CONFIG.pushToTalkCombination) {
     SPEECH_CONFIG.pushToTalkCombination = { modifier: "altKey", key: "v" };

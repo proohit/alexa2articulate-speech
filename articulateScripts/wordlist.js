@@ -1,3 +1,10 @@
+/**
+ * Die folgende Liste stellt eine Liste von Wörtern dar, die in der Spracherkennung erkannt werden.
+ * - Wörter, die in der Liste vorkommen, werden auch in der Spracherkennung erkannt.
+ * - Wörter, die nicht in der Liste vorkommen, werden von der Spracherkennung nicht erkannt.
+ * - Es können auch Umlaute verwendet werden.
+ * - Wörter müssen die Groß- und Kleinschreibung der Grammatik beachten.
+ */
 window.SPEECH_CONFIG.wordlist = [
   "alexa",
   "bibi",
