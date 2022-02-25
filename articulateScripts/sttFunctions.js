@@ -3,6 +3,7 @@ const SCRIPTS_PATH_VAR = "scriptsPath";
 let recognizer = null;
 let player = GetPlayer();
 let spaceBarPressed = false;
+const scriptsPath = player.GetVar(SCRIPTS_PATH_VAR);
 
 document.addEventListener("keydown", (event) => {
   if (event.code === "Space") {
@@ -22,22 +23,19 @@ document.addEventListener("keyup", (event) => {
   }
 });
 
-const modelFilename = "/vosk-model-small-de-0.15.tar.gz";
-const globalPath = "11-01-22-vosk-browser/" + player.GetVar(SCRIPTS_PATH_VAR);
-
-let wordList;
+let wordlist;
 
 async function startSTT() {
   if (recognizer === null) {
     const channel = new MessageChannel();
-    const model = await Vosk.createModel(globalPath + modelFilename);
-    if (!wordList) {
-      wordList = await (await fetch("wordlist.json")).json();
-    }
+    const model = await getModel();
     model.registerPort(channel.port1);
 
     const sampleRate = 48000;
-    recognizer = new model.KaldiRecognizer(sampleRate, wordList);
+    recognizer = new model.KaldiRecognizer(
+      sampleRate,
+      JSON.stringify(SPEECH_CONFIG.wordlist)
+    );
     recognizer.setWords(true);
     recognizer.on("result", (message) => {
       const assistantName = player.GetVar("assistantName").toLowerCase();
@@ -106,6 +104,22 @@ async function startSTT() {
 
     const source = audioContext.createMediaStreamSource(mediaStream);
     source.connect(recognizerProcessor);
+  }
+}
+
+async function getWordlist() {
+  if (!SPEECH_CONFIG.wordlistPath) {
+    return (await fetch(scriptsPath + "/wordlist.json")).json();
+  } else {
+    return (await fetch(SPEECH_CONFIG.wordlistPath)).json();
+  }
+}
+
+async function getModel() {
+  if (!SPEECH_CONFIG.modelPath) {
+    return Vosk.createModel(scriptsPath + "/vosk-model-small-de-0.15.tar.gz");
+  } else {
+    return Vosk.createModel(SPEECH_CONFIG.modelPath);
   }
 }
 
