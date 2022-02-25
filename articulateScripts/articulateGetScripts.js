@@ -1,37 +1,39 @@
 const SCRIPTS_VAR = "scripts";
 const SCRIPTS_PATH_VAR = "scriptsPath";
 
-const VOSK_NAME = "vosk.js";
-const WORDLIST_NAME = "wordlist.js";
-const CONFIG_NAME = "config.js";
-const CAPTIONS_NAME = "captions.css";
-const PEGGY_NAME = "peggy.min.js";
+const DEFAULT_VOSK_NAME = "vosk.js";
+const DEFAULT_WORDLIST_NAME = "wordlist.js";
+const DEFAULT_CONFIG_NAME = "config.js";
+const DEFAULT_CAPTIONS_NAME = "captions.css";
+const DEFAULT_PEGGY_NAME = "peggy.min.js";
+const DEFAULT_RECOGNIZER_PROCESSOR_NAME = "recognizer-processor.js";
+const DEFAULT_MODEL_NAME = "vosk-model-small-de-0.15.tar.gz";
+const DEFAULT_NAMED_GRAMMAR_NAME = "grammar.peggy";
+const DEFAULT_UNNAMED_GRAMMAR_NAME = "grammar-unnamed.peggy";
+const DEFAULT_MODIFIER = "altKey";
+const DEFAULT_KEY = "v";
 
 let player = GetPlayer();
+
 let scripts = player.GetVar(SCRIPTS_VAR).split(",");
-let i = 0;
-let scriptsLoaded = 0;
-
 let path = player.GetVar(SCRIPTS_PATH_VAR);
-
 // if path ends in a "/" dont't add it, if it doesn't add it
 path = path.charAt(path.length) == "/" ? path : path + "/";
 
-iterateScripts();
+loadAllFiles();
 
-async function iterateScripts() {
+async function loadAllFiles() {
   if (window.CustomSLScriptsLoaded) {
     return;
   }
-
   window.CustomSLScriptsLoaded = true;
-  await loadScript(path + CONFIG_NAME);
+  await loadScript(path + DEFAULT_CONFIG_NAME);
   await loadConfig();
-  for (i; i < scripts.length; i++) {
-    scripts[i] = scripts[i].trim();
-    await loadScript(path + scripts[i]);
+  for (const script of scripts) {
+    await loadScript(path + script.trim());
   }
-  loadCss(path + CAPTIONS_NAME);
+  player.SetVar("scriptsImported", true);
+  loadCss(path + DEFAULT_CAPTIONS_NAME);
 }
 
 function loadCss(cssToLoad) {
@@ -53,7 +55,6 @@ function loadScript(scriptToLoad) {
     source.value = scriptToLoad;
     script.setAttributeNode(source);
     script.onload = () => {
-      triggerAllScriptsLoaded();
       resolve();
     };
     head.appendChild(script);
@@ -64,48 +65,38 @@ async function loadConfig() {
   if (SPEECH_CONFIG.voskPath) {
     await loadScript(SPEECH_CONFIG.voskPath);
   } else {
-    await loadScript(path + VOSK_NAME);
+    await loadScript(path + DEFAULT_VOSK_NAME);
   }
   if (SPEECH_CONFIG.wordlistPath) {
     await loadScript(SPEECH_CONFIG.wordlistPath);
   } else {
-    await loadScript(path + WORDLIST_NAME);
+    await loadScript(path + DEFAULT_WORDLIST_NAME);
   }
   if (SPEECH_CONFIG.peggyPath) {
     await loadScript(SPEECH_CONFIG.peggyPath);
   } else {
-    await loadScript(path + PEGGY_NAME);
+    await loadScript(path + DEFAULT_PEGGY_NAME);
   }
   if (!SPEECH_CONFIG.recognizerProcessorPath) {
-    SPEECH_CONFIG.recognizerProcessorPath = path + "recognizer-processor.js";
+    SPEECH_CONFIG.recognizerProcessorPath =
+      path + DEFAULT_RECOGNIZER_PROCESSOR_NAME;
   }
   if (!SPEECH_CONFIG.modelPath) {
-    SPEECH_CONFIG.modelPath = path + "vosk-model-small-de-0.15.tar.gz";
+    SPEECH_CONFIG.modelPath = path + DEFAULT_MODEL_NAME;
   }
   if (!SPEECH_CONFIG.grammarPath) {
     SPEECH_CONFIG.grammarPath = {};
   }
   if (!SPEECH_CONFIG.grammarPath.named) {
-    SPEECH_CONFIG.grammarPath.named = path + "grammar.peggy";
+    SPEECH_CONFIG.grammarPath.named = path + DEFAULT_NAMED_GRAMMAR_NAME;
   }
   if (!SPEECH_CONFIG.grammarPath.unnamed) {
-    SPEECH_CONFIG.grammarPath.unnamed = path + "grammar-unnamed.peggy";
+    SPEECH_CONFIG.grammarPath.unnamed = path + DEFAULT_UNNAMED_GRAMMAR_NAME;
   }
   if (!SPEECH_CONFIG.pushToTalkCombination) {
-    SPEECH_CONFIG.pushToTalkCombination = { modifier: "altKey", key: "v" };
+    SPEECH_CONFIG.pushToTalkCombination = {
+      modifier: DEFAULT_MODIFIER,
+      key: DEFAULT_KEY,
+    };
   }
-}
-
-function triggerAllScriptsLoaded() {
-  scriptsLoaded++;
-
-  if (scriptsLoaded == scripts.length) {
-    setScriptsImported();
-  }
-}
-
-function setScriptsImported() {
-  setTimeout(function () {
-    player.SetVar("scriptsImported", true);
-  }, 2000);
 }
