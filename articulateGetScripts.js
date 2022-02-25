@@ -1,3 +1,6 @@
+/**
+ * PASTE THIS CODE INTO ARTICULATE
+ */
 const SCRIPTS_VAR = "scripts";
 const SCRIPTS_PATH_VAR = "scriptsPath";
 
