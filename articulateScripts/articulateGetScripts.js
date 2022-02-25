@@ -5,6 +5,7 @@ const VOSK_NAME = "vosk.js";
 const WORDLIST_NAME = "wordlist.js";
 const CONFIG_NAME = "config.js";
 const CAPTIONS_NAME = "captions.css";
+const PEGGY_NAME = "peggy.min.js";
 
 let player = GetPlayer();
 let scripts = player.GetVar(SCRIPTS_VAR).split(",");
@@ -70,11 +71,19 @@ async function loadConfig() {
   } else {
     await loadScript(path + WORDLIST_NAME);
   }
+  if (SPEECH_CONFIG.peggyPath) {
+    await loadScript(SPEECH_CONFIG.peggyPath);
+  } else {
+    await loadScript(path + PEGGY_NAME);
+  }
   if (!SPEECH_CONFIG.recognizerProcessorPath) {
     SPEECH_CONFIG.recognizerProcessorPath = path + "recognizer-processor.js";
   }
   if (!SPEECH_CONFIG.modelPath) {
     SPEECH_CONFIG.modelPath = path + "vosk-model-small-de-0.15.tar.gz";
+  }
+  if (!SPEECH_CONFIG.grammarPath) {
+    SPEECH_CONFIG.grammarPath = path + "grammar.peggy";
   }
 }
 

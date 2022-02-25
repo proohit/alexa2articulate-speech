@@ -1,9 +1,6 @@
-const SCRIPTS_PATH_VAR = "scriptsPath";
-
 let recognizer = null;
 let player = GetPlayer();
 let spaceBarPressed = false;
-const scriptsPath = player.GetVar(SCRIPTS_PATH_VAR);
 
 document.addEventListener("keydown", (event) => {
   if (event.code === "Space") {
@@ -26,6 +23,7 @@ document.addEventListener("keyup", (event) => {
 let wordlist;
 
 async function startSTT() {
+  const grammar = await loadGrammar();
   if (recognizer === null) {
     const channel = new MessageChannel();
     const model = await Vosk.createModel(SPEECH_CONFIG.modelPath);
@@ -58,9 +56,7 @@ async function startSTT() {
           player.SetVar("spokenText", hyp);
           hyp = hyp.toLowerCase();
           hyp = removePunctuation(hyp);
-          console.log(hyp);
-          const res = peg$parse(hyp);
-          console.log(res);
+          const res = grammar.parse(hyp);
           res.execute();
         }
       } finally {
@@ -105,6 +101,11 @@ async function startSTT() {
     const source = audioContext.createMediaStreamSource(mediaStream);
     source.connect(recognizerProcessor);
   }
+}
+
+async function loadGrammar() {
+  const rawGrammar = await (await fetch(SPEECH_CONFIG.grammarPath)).text();
+  return peggy.generate(rawGrammar);
 }
 
 function removePunctuation(finalTranscript) {
