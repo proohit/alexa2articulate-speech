@@ -9,25 +9,25 @@ class Command {
 
 class StopCommand extends Command {
   execute() {
-    console.log(`stop`);
+    console.debug(`Stop Command`);
   }
 }
 
 class CancelCommand extends Command {
   execute() {
-    console.log(`cancel`);
+    console.debug(`Cancel Command`);
   }
 }
 
 class WaitCommand extends Command {
   execute() {
-    console.log(`wait`);
+    console.debug(`Wait Command`);
   }
 }
 
 class ContinueCommand extends Command {
   execute() {
-    console.log(`continue`);
+    console.debug(`Continue Command`);
     GetPlayer().SetVar("continue", true);
     GetPlayer().SetVar("continue", false);
   }
@@ -35,7 +35,7 @@ class ContinueCommand extends Command {
 
 class BackCommand extends Command {
   execute() {
-    console.log(`back`);
+    console.debug(`Back Command`);
     GetPlayer().SetVar("back", true);
     GetPlayer().SetVar("back", false);
   }
@@ -67,7 +67,7 @@ class SelectCommand extends Command {
       default:
         break;
     }
-    console.log(`Selecting ${this.subject}`);
+    console.debug(`Select Command:`, { subject: this.subject });
     GetPlayer().SetVar("selectSubject", this.subject);
     GetPlayer().SetVar("selectSubject", "");
   }
@@ -79,7 +79,7 @@ class NavigateCommand extends Command {
   }
 
   execute() {
-    console.log(`Navigating to ${this.subject}`);
+    console.debug(`Navigate Command:`, { subject: this.subject });
     GetPlayer().SetVar("navigateSubject", this.subject);
     GetPlayer().SetVar("navigateSubject", ""); // null causes errors in Articulate
   }
@@ -92,7 +92,12 @@ class ToggleCommand extends Command {
     this.toggleState = toggleState;
   }
   execute() {
-    console.log(`Setting ${this.subject} to ${this.toggleState}`);
+    console.debug(
+      `Toggle Command: ${{
+        subject: this.subject,
+        toggleState: this.toggleState,
+      }}`
+    );
 
     if (this.toggleState) {
       this.toggleState = this.getToggleState(this.toggleState);
@@ -158,7 +163,7 @@ class NameCommand extends Command {
     }
     this.name = arr.join(" ");
 
-    console.log(`Hello, ${this.name}`);
+    console.debug(`Name Command:`, { name: this.name });
     GetPlayer().SetVar("userName", this.name);
   }
 }
@@ -192,7 +197,10 @@ class MediaCommand extends Command {
     }
   }
   execute() {
-    console.log(`Setting ${this.subject} to ${this.state}`);
+    console.debug(`Media Command:`, {
+      subject: this.subject,
+      state: this.state,
+    });
     if (this.subject === "video" || this.subject === "audio") {
       GetPlayer().SetVar(this.subject, this.state);
       GetPlayer().SetVar(this.subject, "");
@@ -212,7 +220,11 @@ class AnswerCommand extends Command {
     this.state = state;
   }
   execute() {
-    console.log(`Answering ${this.subject} on trigger ${this.trigger} with state ${this.state}`);
+    console.debug(`Answer Command:`, {
+      subject: this.subject,
+      trigger: this.trigger,
+      state: this.state,
+    });
 
     if (this.state === "abwählen") {
       GetPlayer().SetVar("unselectQuizAnswer", this.subject);

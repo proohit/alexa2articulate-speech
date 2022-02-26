@@ -37,6 +37,8 @@ document.addEventListener("keyup", (event) => {
 
 async function startSTT() {
   if (recognizer === null) {
+    enableLoading();
+    updateLoadingText("Loading recognizer...");
     const channel = new MessageChannel();
     const model = await Vosk.createModel(SPEECH_CONFIG.modelPath);
     model.registerPort(channel.port1);
@@ -59,7 +61,7 @@ async function startSTT() {
         score += res.conf;
       }
       score /= result.result.length;
-      console.log(`${score} on ${hyp}`);
+      console.debug(`${score} on ${hyp}`);
       if (Number.isNaN(score) || score < 0.9) {
         return;
       }
@@ -92,6 +94,7 @@ async function startSTT() {
       }
     });
 
+    updateLoadingText("Loading microphone...");
     const mediaStream = await navigator.mediaDevices.getUserMedia({
       video: false,
       audio: {
@@ -102,6 +105,7 @@ async function startSTT() {
       },
     });
 
+    updateLoadingText("Connecting audio module...");
     const audioContext = new AudioContext();
     await audioContext.audioWorklet.addModule(
       SPEECH_CONFIG.recognizerProcessorPath
@@ -119,16 +123,20 @@ async function startSTT() {
 
     const source = audioContext.createMediaStreamSource(mediaStream);
     source.connect(recognizerProcessor);
+    disableLoading();
   }
 }
 
 async function loadGrammar(grammarType) {
-  console.log("Loading grammar ", grammarType);
+  enableLoading();
+  updateLoadingText("Loading grammar...");
+  console.debug("Loading grammar", grammarType);
   if (!grammarCache[grammarType]) {
     grammarCache[grammarType] = await (
       await fetch(SPEECH_CONFIG.grammarPath[grammarType])
     ).text();
   }
+  disableLoading();
   return peggy.generate(grammarCache[grammarType]);
 }
 
@@ -141,9 +149,40 @@ function removePunctuation(finalTranscript) {
 }
 
 function stopSTT() {
-  console.log("Stop STT");
+  console.debug("Stop STT");
   if (recognizer) {
     recognizer.terminate();
     recognizer = null;
+  }
+}
+
+function enableLoading() {
+  const hasContainer = document.querySelector(".loading-text");
+  if (hasContainer) {
+    return;
+  }
+  const container = document.createElement("div");
+  container.classList = "loading";
+  const wheel = document.createElement("div");
+  wheel.classList = "spinner";
+  const text = document.createElement("div");
+  text.classList = "loading-text";
+  text.innerText = "Loading...";
+  container.appendChild(wheel);
+  container.appendChild(text);
+  document.body.appendChild(container);
+}
+
+function updateLoadingText(text) {
+  const container = document.querySelector(".loading-text");
+  if (container) {
+    container.innerText = text;
+  }
+}
+
+function disableLoading() {
+  const container = document.querySelector(".loading");
+  if (container) {
+    container.remove();
   }
 }

@@ -1,6 +1,7 @@
 /**
  * PASTE THIS CODE INTO ARTICULATE
  */
+
 const SCRIPTS_VAR = "scripts";
 const SCRIPTS_PATH_VAR = "scriptsPath";
 
@@ -8,6 +9,7 @@ const DEFAULT_VOSK_NAME = "vosk.js";
 const DEFAULT_WORDLIST_NAME = "wordlist.js";
 const DEFAULT_CONFIG_NAME = "config.js";
 const DEFAULT_CAPTIONS_NAME = "captions.css";
+const DEFAULT_LOADING_NAME = "loading.css";
 const DEFAULT_PEGGY_NAME = "peggy.min.js";
 const DEFAULT_RECOGNIZER_PROCESSOR_NAME = "recognizer-processor.js";
 const DEFAULT_MODEL_NAME = "vosk-model-small-de-0.15.tar.gz";
@@ -37,6 +39,7 @@ async function loadAllFiles() {
   }
   player.SetVar("scriptsImported", true);
   loadCss(path + DEFAULT_CAPTIONS_NAME);
+  loadCss(path + DEFAULT_LOADING_NAME);
 }
 
 function loadCss(cssToLoad) {
