@@ -35,9 +35,12 @@ class ContinueCommand extends Command {
 
 class BackCommand extends Command {
   execute() {
-    console.debug(`Back Command`);
-    GetPlayer().SetVar("back", true);
-    GetPlayer().SetVar("back", false);
+    let isCurrentlyLayer = document.querySelectorAll(
+      ".slide-layer:not(.base-layer).shown"
+    ).length > 0;
+    console.debug(`Back Command`, {isCurrentlyLayer});
+    GetPlayer().SetVar(isCurrentlyLayer ? "hideLayer" : "back", true);
+    GetPlayer().SetVar(isCurrentlyLayer ? "hideLayer" : "back", false);
   }
 }
 
