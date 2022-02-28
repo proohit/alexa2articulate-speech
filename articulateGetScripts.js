@@ -13,8 +13,9 @@ const DEFAULT_PEGGY_NAME = "peggy.min.js";
 const DEFAULT_COMMANDS_NAME = "commands.js";
 const DEFAULT_STTFUNCTIONS_NAME = "sttFunctions.js";
 const DEFAULT_RECOGNIZER_PROCESSOR_NAME = "recognizer-processor.js";
+const DEFAULT_CAPTIONS_JS_NAME = "captions.js";
 //css
-const DEFAULT_CAPTIONS_NAME = "captions.css";
+const DEFAULT_CAPTIONS_CSS_NAME = "captions.css";
 const DEFAULT_LOADING_NAME = "loading.css";
 //misc
 const DEFAULT_MODEL_NAME = "vosk-model-small-de-0.15.tar.gz";
@@ -44,8 +45,9 @@ async function loadAllFiles() {
   }
   await loadScript(path + DEFAULT_COMMANDS_NAME);
   await loadScript(path + DEFAULT_STTFUNCTIONS_NAME);
+  await loadScript(path + DEFAULT_CAPTIONS_JS_NAME);
   player.SetVar("scriptsImported", true);
-  loadCss(path + DEFAULT_CAPTIONS_NAME);
+  loadCss(path + DEFAULT_CAPTIONS_CSS_NAME);
   loadCss(path + DEFAULT_LOADING_NAME);
 }
 
