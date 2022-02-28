@@ -74,4 +74,8 @@ window.SPEECH_CONFIG.wordlist = [
   "wechsle zu",
   "untertitel",
   "menü",
+  "modus",
+  "modul",
+  "wählen",
+  "starten"
 ];

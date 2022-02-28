@@ -16,7 +16,7 @@ document.addEventListener("keydown", async (event) => {
       spaceBarPressed = true;
       activeGrammar = "unnamed";
       grammar = await loadGrammar(activeGrammar);
-      player.SetVar("sttIsActive", true);
+      player.SetVar("sttActive", true);
       player.SetVar("sttEnabled", true);
     }
   }
@@ -31,7 +31,7 @@ document.addEventListener("keyup", async (event) => {
     activeGrammar = "named";
     grammar = await loadGrammar(activeGrammar);
     player.SetVar("sttEnabled", false);
-    player.SetVar("sttIsActive", false);
+    player.SetVar("sttActive", false);
   }
 });
 
