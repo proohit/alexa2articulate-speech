@@ -7,7 +7,7 @@ let grammar;
 const grammarCache = { named: "", unnamed: "" };
 loadGrammar(activeGrammar).then((g) => (grammar = g));
 
-document.addEventListener("keydown", (event) => {
+document.addEventListener("keydown", async (event) => {
   if (
     event[SPEECH_CONFIG.pushToTalkCombination.modifier] &&
     event.key === SPEECH_CONFIG.pushToTalkCombination.key
@@ -15,21 +15,21 @@ document.addEventListener("keydown", (event) => {
     if (!spaceBarPressed) {
       spaceBarPressed = true;
       activeGrammar = "unnamed";
-      loadGrammar(activeGrammar).then((g) => (grammar = g));
+      grammar = await loadGrammar(activeGrammar);
       player.SetVar("sttIsActive", true);
       player.SetVar("sttEnabled", true);
     }
   }
 });
 
-document.addEventListener("keyup", (event) => {
+document.addEventListener("keyup", async (event) => {
   if (
     event[SPEECH_CONFIG.pushToTalkCombination.modifier] &&
     event.key === SPEECH_CONFIG.pushToTalkCombination.key
   ) {
     spaceBarPressed = false;
     activeGrammar = "named";
-    loadGrammar(activeGrammar).then((g) => (grammar = g));
+    grammar = await loadGrammar(activeGrammar);
     player.SetVar("sttEnabled", false);
     player.SetVar("sttIsActive", false);
   }
@@ -78,7 +78,7 @@ async function startSTT() {
         }
       } finally {
         player.SetVar("spokenText", "");
-        player.SetVar("sttIsActive", false);
+        player.SetVar("sttActive", false);
       }
     });
     recognizer.on("partialresult", (message) => {
@@ -89,7 +89,7 @@ async function startSTT() {
         (hyp.toLowerCase().includes(assistantName) ||
           activeGrammar === "unnamed")
       ) {
-        player.SetVar("sttIsActive", true);
+        player.SetVar("sttActive", true);
         player.SetVar("spokenText", hyp);
       }
     });

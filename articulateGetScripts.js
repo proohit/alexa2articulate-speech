@@ -25,7 +25,7 @@ const DEFAULT_KEY = "v";
 
 let player = GetPlayer();
 
-let scripts = player.GetVar(SCRIPTS_VAR).split(",");
+let scripts = player.GetVar(SCRIPTS_VAR).split(",").filter(script => !!script);
 let path = player.GetVar(SCRIPTS_PATH_VAR);
 // if path ends in a "/" dont't add it, if it doesn't add it
 path = path.charAt(path.length) == "/" ? path : path + "/";
@@ -111,5 +111,12 @@ async function loadConfig() {
       modifier: DEFAULT_MODIFIER,
       key: DEFAULT_KEY,
     };
+  }
+  if (!SPEECH_CONFIG.pushToTalkCombination.modifier) {
+    SPEECH_CONFIG.pushToTalkCombination.modifier = DEFAULT_MODIFIER;
+  }
+
+  if (!SPEECH_CONFIG.pushToTalkCombination.key) {
+    SPEECH_CONFIG.pushToTalkCombination.key = DEFAULT_KEY;
   }
 }
