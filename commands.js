@@ -127,11 +127,13 @@ class ToggleCommand extends Command {
       case "ein":
       case "an":
       case "true":
+      case "anzeigen":
         return true;
 
       case "aus":
       case "off":
       case "false":
+      case "verstecken":
         return false;
 
       default:

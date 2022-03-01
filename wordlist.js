@@ -28,6 +28,8 @@ window.SPEECH_CONFIG.wordlist = [
   "off",
   "schalte",
   "turn",
+  "anzeigen",
+  "verstecken",
   "voice",
   "sprache",
   "wähle",
