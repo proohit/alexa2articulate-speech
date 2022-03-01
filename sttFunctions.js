@@ -46,7 +46,7 @@ async function startSTT() {
     const sampleRate = 48000;
     recognizer = new model.KaldiRecognizer(
       sampleRate,
-      JSON.stringify(SPEECH_CONFIG.wordlist)
+      JSON.stringify(SPEECH_CONFIG.wordlist.flat())
     );
     recognizer.setWords(true);
     recognizer.on("result", (message) => {
@@ -73,6 +73,8 @@ async function startSTT() {
           player.SetVar("spokenText", hyp);
           hyp = hyp.toLowerCase();
           hyp = removePunctuation(hyp);
+          hyp = replaceAlternatives(hyp);
+          console.debug("recognized text", hyp);
           const res = grammar.parse(hyp);
           res.execute();
         }
@@ -125,6 +127,22 @@ async function startSTT() {
     source.connect(recognizerProcessor);
     disableLoading();
   }
+}
+
+function replaceAlternatives(word) {
+  let temp = word + "";
+  const altWords = SPEECH_CONFIG.wordlist.filter((words) =>
+    Array.isArray(words)
+  );
+  const matchedAltLists = altWords.filter((altList) =>
+    altList.some((altWord) => temp.includes(altWord))
+  );
+  for (const altList of matchedAltLists) {
+    for (const altWord of altList) {
+      temp = temp.replace(altWord, altList[0]);
+    }
+  }
+  return temp;
 }
 
 async function loadGrammar(grammarType) {

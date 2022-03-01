@@ -3,7 +3,7 @@
  * - Wörter, die in der Liste vorkommen, werden auch in der Spracherkennung erkannt.
  * - Wörter, die nicht in der Liste vorkommen, werden von der Spracherkennung nicht erkannt.
  * - Es können auch Umlaute verwendet werden.
- * - Wörter müssen die Groß- und Kleinschreibung der Grammatik beachten.
+ * - Wörter können auch aus Listen mit Alternativwörtern bestehen. Das erste Wort der Alternativliste wird als erkanntes Wort der Grammatik übergeben.
  */
 window.SPEECH_CONFIG.wordlist = [
   "alexa",
@@ -36,14 +36,14 @@ window.SPEECH_CONFIG.wordlist = [
   "selektiere",
   "klicke",
   "klick",
-  "site map",
-  "sprach assistent",
+  ["sitemap", "site map"],
+  ["sprachassistent", "sprach assistent"],
   "qualität",
-  "eins",
-  "zwei",
-  "drei",
-  "vier",
-  "fünf",
+  ["1", "eins"],
+  ["2", "zwei"],
+  ["3", "drei"],
+  ["4", "vier"],
+  ["5", "fünf"],
   "bestätigen",
   "quiz",
   "videos",
@@ -96,5 +96,6 @@ window.SPEECH_CONFIG.wordlist = [
   "anrede",
   "ressourcen",
   "wissen",
-  "check"
+  "check",
+  ["wissenscheck", "wissens check", "wissen check"],
 ];
