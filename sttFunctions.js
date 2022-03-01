@@ -131,15 +131,27 @@ async function startSTT() {
 
 function replaceAlternatives(word) {
   let temp = word + "";
-  const altWords = SPEECH_CONFIG.wordlist.filter((words) =>
-    Array.isArray(words)
-  );
-  const matchedAltLists = altWords.filter((altList) =>
+  const allWords = SPEECH_CONFIG.wordlist;
+  const altLists = allWords.filter((words) => Array.isArray(words));
+  const matchedAltLists = altLists.filter((altList) =>
     altList.some((altWord) => temp.includes(altWord))
   );
+
   for (const altList of matchedAltLists) {
     for (const altWord of altList) {
-      temp = temp.replace(altWord, altList[0]);
+      const isWordAlreadyDirectlyDefined = allWords.includes(altWord);
+      const isWordAlreadyIndirectlyDefined = allWords
+        .filter((words) => !Array.isArray(words))
+        .some((word) => word.includes(altWord));
+      const ignoreWord =
+        isWordAlreadyDirectlyDefined || isWordAlreadyIndirectlyDefined;
+      if (ignoreWord) {
+        console.debug(`Ignoring ${altWord}`);
+        continue;
+      }
+      const keyOfAlt = altList[0];
+      console.debug(`Replacing word ${altWord} with alternative ${keyOfAlt}`);
+      temp = temp.replace(altWord, keyOfAlt);
     }
   }
   return temp;
