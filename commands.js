@@ -28,19 +28,22 @@ class WaitCommand extends Command {
 class ContinueCommand extends Command {
   execute() {
     console.debug(`Continue Command`);
-    GetPlayer().SetVar("continue", true);
-    GetPlayer().SetVar("continue", false);
+    document.getElementById("next").click();
   }
 }
 
 class BackCommand extends Command {
   execute() {
-    let isCurrentlyLayer = document.querySelectorAll(
-      ".slide-layer:not(.base-layer).shown"
-    ).length > 0;
-    console.debug(`Back Command`, {isCurrentlyLayer});
-    GetPlayer().SetVar(isCurrentlyLayer ? "hideLayer" : "back", true);
-    GetPlayer().SetVar(isCurrentlyLayer ? "hideLayer" : "back", false);
+    let isCurrentlyLayer =
+      document.querySelectorAll(".slide-layer:not(.base-layer).shown").length >
+      0;
+    console.debug(`Back Command`, { isCurrentlyLayer });
+    if (isCurrentlyLayer) {
+      GetPlayer().SetVar("hideLayer", true);
+      GetPlayer().SetVar("hideLayer", false);
+    } else {
+      document.getElementById("prev").click();
+    }
   }
 }
 
@@ -51,25 +54,7 @@ class SelectCommand extends Command {
   }
 
   execute() {
-    switch (this.subject) {
-      case "eins":
-        this.subject = "1";
-        break;
-      case "zwei":
-        this.subject = "2";
-        break;
-      case "drei":
-        this.subject = "3";
-        break;
-      case "vier":
-        this.subject = "4";
-        break;
-      case "fünf":
-        this.subject = "5";
-        break;
-      default:
-        break;
-    }
+    this.subject = convertNumbersToFigures(this.subject);
     console.debug(`Select Command:`, { subject: this.subject });
     GetPlayer().SetVar("selectSubject", this.subject);
     GetPlayer().SetVar("selectSubject", "");
@@ -82,6 +67,7 @@ class NavigateCommand extends Command {
   }
 
   execute() {
+    this.subject = convertNumbersToFigures(this.subject);
     console.debug(`Navigate Command:`, { subject: this.subject });
     GetPlayer().SetVar("navigateSubject", this.subject);
     GetPlayer().SetVar("navigateSubject", ""); // null causes errors in Articulate
@@ -223,6 +209,7 @@ class AnswerCommand extends Command {
     this.state = state;
   }
   execute() {
+    this.subject = convertNumbersToFigures(this.subject);
     console.debug(`Answer Command:`, {
       subject: this.subject,
       trigger: this.trigger,
@@ -238,4 +225,14 @@ class AnswerCommand extends Command {
     GetPlayer().SetVar("givenQuizAnswer", this.subject);
     GetPlayer().SetVar("givenQuizAnswer", "");
   }
+}
+
+function convertNumbersToFigures(subject) {
+  subject = subject.replace(/\beins\b/, "1");
+  subject = subject.replace(/\bzwei\b/, "2");
+  subject = subject.replace(/\bdrei\b/, "3");
+  subject = subject.replace(/\bvier\b/, "4");
+  subject = subject.replace(/\bfünf\b/, "5");
+
+  return subject
 }

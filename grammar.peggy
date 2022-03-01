@@ -8,12 +8,13 @@ DirectCommand = NameCommand / StopCommand/CancelCommand/WaitCommand/ContinueComm
 SubjectCommand = NavigateCommand/ToggleCommand/SelectCommand/MediaCommand/AnswerCommand
 
 //Navigate
-NavigateCommand = NavigateCommandExplicit/NavigateCommandImplicit
+// implicit verursacht Konflikte mit SelectCommand
+NavigateCommand = NavigateCommandExplicit // /NavigateCommandImplicit
 NavigateCommandExplicit = trigger:("navigate to"/"go to"/"navigiere zu"/"geh zu"/"gehe zu"/"wechsle zu"/"wechsel zu") Whitespace+ subject:NavigationSubject {
      return new NavigateCommand(trigger, subject) 
 }
-NavigateCommandImplicit = subject:NavigationSubject { return new NavigateCommand(undefined, subject) }
-NavigationSubject = "befehle"/"help"/"hilfe"/"recherche"/"gute wissenschaftliche praxis"/"zitieren"/"plagiieren"/"home"/"übersicht"/"start"/("sitemap"/"site map")/"impressum"/"test"/"einstellungen"
+// NavigateCommandImplicit = subject:NavigationSubject { return new NavigateCommand(undefined, subject) }
+NavigationSubject = "plagiat oder fehler"/"plagiatsformen"/"plagiatserkennung"/"plagiieren verhindern"/"wissen check"/"übersicht"/"einstellungen"/"home"/"impressum"/("kapitel 1"/"kapitel eins")/("kapitel 2"/"kapitel zwei")/("kapitel 3"/"kapitel drei")/("kapitel 4"/"kapitel vier")
 
 StopCommand = trigger:("stoppen"/"stopp"/"stop"/"beenden") {return new StopCommand(trigger)}
 
@@ -39,7 +40,7 @@ SelectCommandExplicit = trigger:("wähle"/"selektiere"/"klicke"/"klick"/"click")
      return new SelectCommand(trigger, subject) 
 }
 SelectCommandImplicit = subject:SelectionSubject { return new SelectCommand(undefined, subject) }
-SelectionSubject = ("modus wählen"/"modul starten"/"recherchetipps"/"recherche tipps"/"grundlagen des wissenschaftlichen arbeitens"/"suchstrategie"/"suchtools"/"qualität"/("basisfunktionen"/"basisfunktion")/"quiz"/"videos"/"1"/"2"/"3"/"4"/"5"/"eins"/"zwei"/"drei"/"vier"/"fünf"/"bestätigen"/"alexa"/"bibi"/"harry")
+SelectionSubject = ("modus wählen"/"modul starten"/"plagiieren"/"plagiieren verhindern"/"informationen"/("sprachbefehle"/"sprach befehle")/"modus"/"name"/"anrede"/"ressourcen"/("video 1"/"video eins")/("video 2"/"video zwei")/"fortfahren"/"abschicken"/"bestätigen"/"alexa"/"bibi"/"harry")
 
 NameCommand = trigger:("mein name ist") Whitespace+ name:Name { return new NameCommand(trigger, name.join('')) }
 Name = ([a-zA-Z]*)
@@ -54,9 +55,10 @@ MediaSubject = ("video")
 MediaTrigger = ("spiele"/"spiel"/"halte"/"stoppe"/"stopp"/"stop"/"play"/"pause"/"pausiere")
 
 // Answer
-AnswerCommand = AnswerCommandExplicit/AnswerCommandImplicit
-AnswerCommandExplicit = trigger:AnswerTrigger Whitespace+ subject:AnswerSubject Whitespace? state:AnswerState? { return new AnswerCommand(trigger, subject, state) }
+AnswerCommand = AnswerCommandExplicit/AnswerCommandWithState/AnswerCommandImplicit
+AnswerCommandExplicit = trigger:AnswerTrigger Whitespace+ subject:AnswerSubject Whitespace state:AnswerState { return new AnswerCommand(trigger, subject, state) }
+AnswerCommandWithState = subject:AnswerSubject Whitespace state:AnswerState { return new AnswerCommand(undefined, subject, state) }
 AnswerCommandImplicit = subject:AnswerSubject { return new AnswerCommand(undefined, subject, undefined) }
-AnswerSubject = ("a"/"b"/"c"/"d"/"1"/"2"/"3"/"4")
+AnswerSubject = ("1"/"2"/"3"/"4"/"5"/"eins"/"zwei"/"drei"/"vier"/"fünf"/"richtig"/"falsch"/"ja"/"nein")
 AnswerTrigger = ("antwort")
 AnswerState = ("auswählen"/"abwählen")
