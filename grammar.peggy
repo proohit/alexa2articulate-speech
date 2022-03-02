@@ -14,7 +14,7 @@ NavigateCommandExplicit = trigger:("navigate to"/"go to"/"navigiere zu"/"geh zu"
      return new NavigateCommand(trigger, subject) 
 }
 // NavigateCommandImplicit = subject:NavigationSubject { return new NavigateCommand(undefined, subject) }
-NavigationSubject = "plagiat oder fehler"/"plagiatsformen"/"plagiatserkennung"/"plagiieren verhindern"/"wissen check"/"übersicht"/"einstellungen"/"home"/"impressum"/("kapitel 1"/"kapitel eins")/("kapitel 2"/"kapitel zwei")/("kapitel 3"/"kapitel drei")/("kapitel 4"/"kapitel vier")
+NavigationSubject = "plagiat oder fehler"/"plagiatsformen"/"plagiatserkennung"/"plagiieren verhindern"/"wissenscheck"/"übersicht"/"einstellungen"/"home"/"impressum"/("kapitel 1"/"kapitel eins")/("kapitel 2"/"kapitel zwei")/("kapitel 3"/"kapitel drei")/("kapitel 4"/"kapitel vier")
 
 StopCommand = trigger:("stoppen"/"stopp"/"stop"/"beenden") {return new StopCommand(trigger)}
 
@@ -40,7 +40,7 @@ SelectCommandExplicit = trigger:("wähle"/"selektiere"/"klicke"/"klick"/"click")
      return new SelectCommand(trigger, subject) 
 }
 SelectCommandImplicit = subject:SelectionSubject { return new SelectCommand(undefined, subject) }
-SelectionSubject = ("plagiat oder fehler"/"plagiatsformen"/"plagiatserkennung"/"plagiieren verhindern"/"wissen check"/"modus wählen"/"modul starten"/"plagiieren"/"plagiieren verhindern"/"informationen"/("sprachbefehle"/"sprach befehle")/"modus"/"name"/"anrede"/"ressourcen"/("video 1"/"video eins")/("video 2"/"video zwei")/"fortfahren"/"abschicken"/"bestätigen"/"alexa"/"bibi"/"harry")
+SelectionSubject = ("plagiat oder fehler"/"plagiatsformen"/"plagiatserkennung"/"plagiieren verhindern"/"wissenscheck"/"modus wählen"/"modul starten"/"plagiieren"/"plagiieren verhindern"/"informationen"/("sprachbefehle"/"sprach befehle")/"modus"/"name"/"anrede"/"ressourcen"/("video 1"/"video eins")/("video 2"/"video zwei")/"fortfahren"/"abschicken"/"bestätigen"/"alexa"/"bibi"/"harry")
 
 NameCommand = trigger:("mein name ist") Whitespace+ name:Name { return new NameCommand(trigger, name.join('')) }
 Name = ([a-zA-Z]*)
