@@ -6,9 +6,9 @@
  * - Wörter können auch aus Listen mit Alternativwörtern bestehen. Das erste Wort der Alternativliste wird als erkanntes Wort der Grammatik übergeben.
  */
 window.SPEECH_CONFIG.wordlist = [
-  "alexa",
-  "bibi",
-  "harry",
+  "kim",
+  "mario",
+  "dora",
   "navigate",
   "to",
   "geh",

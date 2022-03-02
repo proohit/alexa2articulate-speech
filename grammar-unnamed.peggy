@@ -39,7 +39,7 @@ SelectCommandExplicit = trigger:("wähle"/"selektiere"/"klicke"/"klick"/"click")
      return new SelectCommand(trigger, subject) 
 }
 SelectCommandImplicit = subject:SelectionSubject { return new SelectCommand(undefined, subject) }
-SelectionSubject = ("plagiat oder fehler"/"plagiatsformen"/"plagiatserkennung"/"plagiieren verhindern"/"wissenscheck"/"modus wählen"/"modul starten"/"plagiieren"/"plagiieren verhindern"/"informationen"/("sprachbefehle"/"sprach befehle")/"modus"/"name"/"anrede"/"ressourcen"/("video 1"/"video eins")/("video 2"/"video zwei")/"fortfahren"/"abschicken"/"bestätigen"/"alexa"/"bibi"/"harry")
+SelectionSubject = ("plagiat oder fehler"/"plagiatsformen"/"plagiatserkennung"/"plagiieren verhindern"/"wissenscheck"/"modus wählen"/"modul starten"/"plagiieren"/"plagiieren verhindern"/"informationen"/("sprachbefehle"/"sprach befehle")/"modus"/"name"/"anrede"/"ressourcen"/("video 1"/"video eins")/("video 2"/"video zwei")/"fortfahren"/"abschicken"/"bestätigen"/"kim"/"mario"/"dora")
 
 NameCommand = trigger:("mein name ist") Whitespace+ name:Name { return new NameCommand(trigger, name.join('')) }
 Name = ([a-zA-Z]*)
