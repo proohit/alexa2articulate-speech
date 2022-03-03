@@ -41,6 +41,7 @@ async function startSTT() {
     updateLoadingText("Loading recognizer...");
     const channel = new MessageChannel();
     const model = await Vosk.createModel(SPEECH_CONFIG.modelPath);
+    model.setLogLevel(-1);
     model.registerPort(channel.port1);
 
     const sampleRate = 48000;
