@@ -122,7 +122,10 @@ async function loadConfig() {
       key: DEFAULT_KEY,
     };
   }
-  if (!SPEECH_CONFIG.pushToTalkCombination.modifier) {
+  if (
+    !SPEECH_CONFIG.pushToTalkCombination.modifier &&
+    SPEECH_CONFIG.pushToTalkCombination.key
+  ) {
     SPEECH_CONFIG.pushToTalkCombination.modifier = DEFAULT_MODIFIER;
   }
   if (!SPEECH_CONFIG.pushToTalkCombination.key) {

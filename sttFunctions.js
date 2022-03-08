@@ -12,12 +12,19 @@ function initSTT() {
   registerKeyboardShortcuts();
 }
 
+function triggeredShortcut(event) {
+  const modifier = SPEECH_CONFIG.pushToTalkCombination.modifier;
+  const key = SPEECH_CONFIG.pushToTalkCombination.key;
+  const hasModifier = !!modifier;
+  if (hasModifier) {
+    return event[modifier] && event.key === key;
+  }
+  return event.key === key;
+}
+
 function registerKeyboardShortcuts() {
   document.addEventListener("keydown", async (event) => {
-    if (
-      event[SPEECH_CONFIG.pushToTalkCombination.modifier] &&
-      event.key === SPEECH_CONFIG.pushToTalkCombination.key
-    ) {
+    if (triggeredShortcut(event)) {
       if (!spaceBarPressed) {
         spaceBarPressed = true;
         activeGrammar = "unnamed";
@@ -29,10 +36,7 @@ function registerKeyboardShortcuts() {
   });
 
   document.addEventListener("keyup", async (event) => {
-    if (
-      event[SPEECH_CONFIG.pushToTalkCombination.modifier] &&
-      event.key === SPEECH_CONFIG.pushToTalkCombination.key
-    ) {
+    if (triggeredShortcut(event)) {
       spaceBarPressed = false;
       activeGrammar = "named";
       grammar = await loadGrammar(activeGrammar);
