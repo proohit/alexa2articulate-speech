@@ -15,6 +15,7 @@ const DEFAULT_STTFUNCTIONS_NAME = "sttFunctions.js";
 const DEFAULT_RECOGNIZER_PROCESSOR_NAME = "recognizer-processor.js";
 const DEFAULT_CAPTIONS_JS_NAME = "captions.js";
 const DEFAULT_CONSTANTS_NAME = "constants.js";
+const DEFAULT_UTILS_NAME = "utils.js";
 //css
 const DEFAULT_CAPTIONS_CSS_NAME = "captions.css";
 const DEFAULT_LOADING_NAME = "loading.css";
@@ -44,6 +45,7 @@ async function loadAllFiles() {
   }
   window.CustomSLScriptsLoaded = true;
   await loadScript(path + DEFAULT_CONSTANTS_NAME);
+  await loadScript(path + DEFAULT_UTILS_NAME);
   await loadScript(path + DEFAULT_CONFIG_NAME);
   await loadConfig();
   for (const script of scripts) {

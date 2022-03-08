@@ -19,3 +19,5 @@ var ID_HAMBURGER_BUTTON = "hamburger";
 
 // Selectors
 var SELECTOR_LAYER = ".slide-layer:not(.base-layer).shown";
+var SELECTOR_LOADING_TEXT = ".loading-text";
+var SELECTOR_LOADING = ".loading";

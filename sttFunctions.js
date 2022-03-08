@@ -5,35 +5,97 @@ let spaceBarPressed = false;
 let activeGrammar = "named";
 let grammar;
 const grammarCache = { named: "", unnamed: "" };
-loadGrammar(activeGrammar).then((g) => (grammar = g));
+initSTT();
 
-document.addEventListener("keydown", async (event) => {
-  if (
-    event[SPEECH_CONFIG.pushToTalkCombination.modifier] &&
-    event.key === SPEECH_CONFIG.pushToTalkCombination.key
-  ) {
-    if (!spaceBarPressed) {
-      spaceBarPressed = true;
-      activeGrammar = "unnamed";
-      grammar = await loadGrammar(activeGrammar);
-      player.SetVar(VAR_STT_ACTIVE, true);
-      player.SetVar(VAR_STT_ENABLED, true);
+function initSTT() {
+  loadGrammar(activeGrammar).then((g) => (grammar = g));
+  registerKeyboardShortcuts();
+}
+
+function registerKeyboardShortcuts() {
+  document.addEventListener("keydown", async (event) => {
+    if (
+      event[SPEECH_CONFIG.pushToTalkCombination.modifier] &&
+      event.key === SPEECH_CONFIG.pushToTalkCombination.key
+    ) {
+      if (!spaceBarPressed) {
+        spaceBarPressed = true;
+        activeGrammar = "unnamed";
+        grammar = await loadGrammar(activeGrammar);
+        player.SetVar(VAR_STT_ACTIVE, true);
+        player.SetVar(VAR_STT_ENABLED, true);
+      }
     }
-  }
-});
+  });
 
-document.addEventListener("keyup", async (event) => {
-  if (
-    event[SPEECH_CONFIG.pushToTalkCombination.modifier] &&
-    event.key === SPEECH_CONFIG.pushToTalkCombination.key
-  ) {
-    spaceBarPressed = false;
-    activeGrammar = "named";
-    grammar = await loadGrammar(activeGrammar);
-    player.SetVar(VAR_STT_ENABLED, false);
+  document.addEventListener("keyup", async (event) => {
+    if (
+      event[SPEECH_CONFIG.pushToTalkCombination.modifier] &&
+      event.key === SPEECH_CONFIG.pushToTalkCombination.key
+    ) {
+      spaceBarPressed = false;
+      activeGrammar = "named";
+      grammar = await loadGrammar(activeGrammar);
+      player.SetVar(VAR_STT_ENABLED, false);
+      player.SetVar(VAR_STT_ACTIVE, false);
+    }
+  });
+}
+
+function handleFinalResult(message) {
+  const assistantName = player.GetVar(VAR_ASSISTANT_NAME).toLowerCase();
+  const result = message.result;
+  let hyp = result.text;
+  if (!hyp) {
+    return;
+  }
+  let score = 0;
+  for (const res of result.result) {
+    score += res.conf;
+  }
+  score /= result.result.length;
+  console.debug(`${score} on ${hyp}`);
+  if (Number.isNaN(score) || score < 0.9) {
+    return;
+  }
+  try {
+    if (
+      hyp.toLowerCase().includes(assistantName) ||
+      activeGrammar === "unnamed"
+    ) {
+      player.SetVar(VAR_SPOKEN_TEXT, hyp);
+      hyp = hyp.toLowerCase();
+      hyp = removePunctuation(hyp);
+      hyp = replaceAlternatives(SPEECH_CONFIG.wordlist, hyp);
+      console.debug("recognized text", hyp);
+      const res = grammar.parse(hyp);
+      res.execute();
+    }
+  } finally {
+    player.SetVar(VAR_SPOKEN_TEXT, "");
     player.SetVar(VAR_STT_ACTIVE, false);
   }
-});
+}
+
+function handlePartialResult(message) {
+  const hyp = message.result.partial;
+  const assistantName = player.GetVar(VAR_ASSISTANT_NAME).toLowerCase();
+  if (
+    hyp &&
+    (hyp.toLowerCase().includes(assistantName) || activeGrammar === "unnamed")
+  ) {
+    player.SetVar(VAR_STT_ACTIVE, true);
+    player.SetVar(VAR_SPOKEN_TEXT, hyp);
+  }
+}
+
+function createRecognizer(model, sampleRate, wordlist) {
+  const rec = new model.KaldiRecognizer(sampleRate, wordlist);
+  rec.setWords(true);
+  rec.on("result", handleFinalResult);
+  rec.on("partialresult", handlePartialResult);
+  return rec;
+}
 
 async function startSTT() {
   if (recognizer === null) {
@@ -45,117 +107,24 @@ async function startSTT() {
     model.registerPort(channel.port1);
 
     const sampleRate = 48000;
-    recognizer = new model.KaldiRecognizer(
+    recognizer = createRecognizer(
+      model,
       sampleRate,
       JSON.stringify(SPEECH_CONFIG.wordlist.flat())
     );
-    recognizer.setWords(true);
-    recognizer.on("result", (message) => {
-      const assistantName = player.GetVar(VAR_ASSISTANT_NAME).toLowerCase();
-      const result = message.result;
-      let hyp = result.text;
-      if (!hyp) {
-        return;
-      }
-      let score = 0;
-      for (const res of result.result) {
-        score += res.conf;
-      }
-      score /= result.result.length;
-      console.debug(`${score} on ${hyp}`);
-      if (Number.isNaN(score) || score < 0.9) {
-        return;
-      }
-      try {
-        if (
-          hyp.toLowerCase().includes(assistantName) ||
-          activeGrammar === "unnamed"
-        ) {
-          player.SetVar(VAR_SPOKEN_TEXT, hyp);
-          hyp = hyp.toLowerCase();
-          hyp = removePunctuation(hyp);
-          hyp = replaceAlternatives(hyp);
-          console.debug("recognized text", hyp);
-          const res = grammar.parse(hyp);
-          res.execute();
-        }
-      } finally {
-        player.SetVar(VAR_SPOKEN_TEXT, "");
-        player.SetVar(VAR_STT_ACTIVE, false);
-      }
-    });
-    recognizer.on("partialresult", (message) => {
-      const hyp = message.result.partial;
-      const assistantName = player.GetVar(VAR_ASSISTANT_NAME).toLowerCase();
-      if (
-        hyp &&
-        (hyp.toLowerCase().includes(assistantName) ||
-          activeGrammar === "unnamed")
-      ) {
-        player.SetVar(VAR_STT_ACTIVE, true);
-        player.SetVar(VAR_SPOKEN_TEXT, hyp);
-      }
-    });
-
     updateLoadingText("Loading microphone...");
-    const mediaStream = await navigator.mediaDevices.getUserMedia({
-      video: false,
-      audio: {
-        echoCancellation: true,
-        noiseSuppression: true,
-        channelCount: 1,
-        sampleRate,
-      },
-    });
-
+    const mediaStream = await getMicrophoneStream(sampleRate);
     updateLoadingText("Connecting audio module...");
-    const audioContext = new AudioContext();
-    await audioContext.audioWorklet.addModule(
-      SPEECH_CONFIG.recognizerProcessorPath
-    );
-    const recognizerProcessor = new AudioWorkletNode(
+    const audioContext = await initializeAudioContext();
+    const recognizerProcessor = initializeRecognizerProcessor(
       audioContext,
-      "recognizer-processor",
-      { channelCount: 1, numberOfInputs: 1, numberOfOutputs: 1 }
+      channel,
+      recognizer.id
     );
-    recognizerProcessor.port.postMessage(
-      { action: "init", recognizerId: recognizer.id },
-      [channel.port2]
-    );
-    recognizerProcessor.connect(audioContext.destination);
-
     const source = audioContext.createMediaStreamSource(mediaStream);
     source.connect(recognizerProcessor);
     disableLoading();
   }
-}
-
-function replaceAlternatives(word) {
-  let temp = word + "";
-  const allWords = SPEECH_CONFIG.wordlist;
-  const altLists = allWords.filter((words) => Array.isArray(words));
-  const matchedAltLists = altLists.filter((altList) =>
-    altList.some((altWord) => temp.includes(altWord))
-  );
-
-  for (const altList of matchedAltLists) {
-    for (const altWord of altList) {
-      const isWordAlreadyDirectlyDefined = allWords.includes(altWord);
-      const isWordAlreadyIndirectlyDefined = allWords
-        .filter((words) => !Array.isArray(words))
-        .some((word) => word.includes(altWord));
-      const ignoreWord =
-        isWordAlreadyDirectlyDefined || isWordAlreadyIndirectlyDefined;
-      if (ignoreWord) {
-        console.debug(`Ignoring ${altWord}`);
-        continue;
-      }
-      const keyOfAlt = altList[0];
-      console.debug(`Replacing word ${altWord} with alternative ${keyOfAlt}`);
-      temp = temp.replace(altWord, keyOfAlt);
-    }
-  }
-  return temp;
 }
 
 async function loadGrammar(grammarType) {
@@ -171,49 +140,10 @@ async function loadGrammar(grammarType) {
   return peggy.generate(grammarCache[grammarType]);
 }
 
-function removePunctuation(finalTranscript) {
-  finalTranscript = finalTranscript.replace(",", "");
-  finalTranscript = finalTranscript.replace(".", "");
-  finalTranscript = finalTranscript.replace("!", "");
-  finalTranscript = finalTranscript.replace("?", "");
-  return finalTranscript;
-}
-
 function stopSTT() {
   console.debug("Stop STT");
   if (recognizer) {
     recognizer.terminate();
     recognizer = null;
-  }
-}
-
-function enableLoading() {
-  const hasContainer = document.querySelector(".loading-text");
-  if (hasContainer) {
-    return;
-  }
-  const container = document.createElement("div");
-  container.classList = "loading";
-  const wheel = document.createElement("div");
-  wheel.classList = "spinner";
-  const text = document.createElement("div");
-  text.classList = "loading-text";
-  text.innerText = "Loading...";
-  container.appendChild(wheel);
-  container.appendChild(text);
-  document.body.appendChild(container);
-}
-
-function updateLoadingText(text) {
-  const container = document.querySelector(".loading-text");
-  if (container) {
-    container.innerText = text;
-  }
-}
-
-function disableLoading() {
-  const container = document.querySelector(".loading");
-  if (container) {
-    container.remove();
   }
 }
