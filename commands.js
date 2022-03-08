@@ -28,7 +28,7 @@ class WaitCommand extends Command {
 class ContinueCommand extends Command {
   execute() {
     console.debug(`Continue Command`);
-    document.getElementById("next").click();
+    document.getElementById(ID_NEXT_BUTTON).click();
   }
 }
 
@@ -39,10 +39,10 @@ class BackCommand extends Command {
       0;
     console.debug(`Back Command`, { isCurrentlyLayer });
     if (isCurrentlyLayer) {
-      GetPlayer().SetVar("hideLayer", true);
-      GetPlayer().SetVar("hideLayer", false);
+      GetPlayer().SetVar(VAR_HIDE_LAYER, true);
+      GetPlayer().SetVar(VAR_HIDE_LAYER, false);
     } else {
-      document.getElementById("prev").click();
+      document.getElementById(ID_PREVIOUS_BUTTON).click();
     }
   }
 }
@@ -56,8 +56,8 @@ class SelectCommand extends Command {
   execute() {
     this.subject = convertNumbersToFigures(this.subject);
     console.debug(`Select Command:`, { subject: this.subject });
-    GetPlayer().SetVar("selectSubject", this.subject);
-    GetPlayer().SetVar("selectSubject", "");
+    GetPlayer().SetVar(VAR_SELECT_SUBJECT, this.subject);
+    GetPlayer().SetVar(VAR_SELECT_SUBJECT, "");
   }
 }
 class NavigateCommand extends Command {
@@ -69,8 +69,8 @@ class NavigateCommand extends Command {
   execute() {
     this.subject = convertNumbersToFigures(this.subject);
     console.debug(`Navigate Command:`, { subject: this.subject });
-    GetPlayer().SetVar("navigateSubject", this.subject);
-    GetPlayer().SetVar("navigateSubject", ""); // null causes errors in Articulate
+    GetPlayer().SetVar(VAR_NAVIGATE_SUBJECT, this.subject);
+    GetPlayer().SetVar(VAR_NAVIGATE_SUBJECT, ""); // null causes errors in Articulate
   }
 }
 
@@ -97,9 +97,9 @@ class ToggleCommand extends Command {
         this.subject
       )
     ) {
-      GetPlayer().SetVar("sttEnabled", this.toggleState ?? true);
+      GetPlayer().SetVar(VAR_STT_ENABLED, this.toggleState ?? true);
     } else if (["untertitel"].includes(this.subject)) {
-      const captions = document.getElementById("captions");
+      const captions = document.getElementById(ID_CAPTIONS);
       if (captions) {
         const captionsState = this.getToggleState(
           captions.attributes.getNamedItem("aria-pressed").value
@@ -109,7 +109,7 @@ class ToggleCommand extends Command {
         }
       }
     } else if (["menü", "menu"].includes(this.subject)) {
-      const menu = document.getElementById("hamburger");
+      const menu = document.getElementById(ID_HAMBURGER_BUTTON);
       if (menu) {
         const menuState = this.getToggleState(
           menu.attributes.getNamedItem("aria-expanded").value
@@ -192,14 +192,14 @@ class MediaCommand extends Command {
       subject: this.subject,
       state: this.state,
     });
-    if (this.subject === "video" || this.subject === "audio") {
+    if (this.subject === VAR_VIDEO || this.subject === VAR_AUDIO) {
       GetPlayer().SetVar(this.subject, this.state);
       GetPlayer().SetVar(this.subject, "");
     } else {
-      GetPlayer().SetVar("video", this.state);
-      GetPlayer().SetVar("audio", this.state);
-      GetPlayer().SetVar("video", "");
-      GetPlayer().SetVar("audio", "");
+      GetPlayer().SetVar(VAR_VIDEO, this.state);
+      GetPlayer().SetVar(VAR_AUDIO, this.state);
+      GetPlayer().SetVar(VAR_VIDEO, "");
+      GetPlayer().SetVar(VAR_AUDIO, "");
     }
   }
 }
@@ -219,13 +219,13 @@ class AnswerCommand extends Command {
     });
 
     if (this.state === "abwählen") {
-      GetPlayer().SetVar("unselectQuizAnswer", this.subject);
-      GetPlayer().SetVar("unselectQuizAnswer", "");
+      GetPlayer().SetVar(VAR_UNSELECT_QUIZ_ANSWER, this.subject);
+      GetPlayer().SetVar(VAR_UNSELECT_QUIZ_ANSWER, "");
       return;
     }
 
-    GetPlayer().SetVar("givenQuizAnswer", this.subject);
-    GetPlayer().SetVar("givenQuizAnswer", "");
+    GetPlayer().SetVar(VAR_GIVEN_QUIZ_ANSWER, this.subject);
+    GetPlayer().SetVar(VAR_GIVEN_QUIZ_ANSWER, "");
   }
 }
 
@@ -236,5 +236,5 @@ function convertNumbersToFigures(subject) {
   subject = subject.replace(/\bvier\b/, "4");
   subject = subject.replace(/\bfünf\b/, "5");
 
-  return subject
+  return subject;
 }

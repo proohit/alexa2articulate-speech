@@ -14,7 +14,7 @@ function redirectCaptions() {
   captions.style.visibility = "hidden";
 
   const observer = new MutationObserver((mutations) => {
-    player.SetVar("spokenText", mutations[0].target.textContent);
+    player.SetVar(VAR_SPOKEN_TEXT, mutations[0].target.textContent);
   });
 
   observer.observe(captions, captionsConfig);

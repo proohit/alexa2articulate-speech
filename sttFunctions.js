@@ -16,8 +16,8 @@ document.addEventListener("keydown", async (event) => {
       spaceBarPressed = true;
       activeGrammar = "unnamed";
       grammar = await loadGrammar(activeGrammar);
-      player.SetVar("sttActive", true);
-      player.SetVar("sttEnabled", true);
+      player.SetVar(VAR_STT_ACTIVE, true);
+      player.SetVar(VAR_STT_ENABLED, true);
     }
   }
 });
@@ -30,8 +30,8 @@ document.addEventListener("keyup", async (event) => {
     spaceBarPressed = false;
     activeGrammar = "named";
     grammar = await loadGrammar(activeGrammar);
-    player.SetVar("sttEnabled", false);
-    player.SetVar("sttActive", false);
+    player.SetVar(VAR_STT_ENABLED, false);
+    player.SetVar(VAR_STT_ACTIVE, false);
   }
 });
 
@@ -51,7 +51,7 @@ async function startSTT() {
     );
     recognizer.setWords(true);
     recognizer.on("result", (message) => {
-      const assistantName = player.GetVar("assistantName").toLowerCase();
+      const assistantName = player.GetVar(VAR_ASSISTANT_NAME).toLowerCase();
       const result = message.result;
       let hyp = result.text;
       if (!hyp) {
@@ -71,7 +71,7 @@ async function startSTT() {
           hyp.toLowerCase().includes(assistantName) ||
           activeGrammar === "unnamed"
         ) {
-          player.SetVar("spokenText", hyp);
+          player.SetVar(VAR_SPOKEN_TEXT, hyp);
           hyp = hyp.toLowerCase();
           hyp = removePunctuation(hyp);
           hyp = replaceAlternatives(hyp);
@@ -80,20 +80,20 @@ async function startSTT() {
           res.execute();
         }
       } finally {
-        player.SetVar("spokenText", "");
-        player.SetVar("sttActive", false);
+        player.SetVar(VAR_SPOKEN_TEXT, "");
+        player.SetVar(VAR_STT_ACTIVE, false);
       }
     });
     recognizer.on("partialresult", (message) => {
       const hyp = message.result.partial;
-      const assistantName = player.GetVar("assistantName").toLowerCase();
+      const assistantName = player.GetVar(VAR_ASSISTANT_NAME).toLowerCase();
       if (
         hyp &&
         (hyp.toLowerCase().includes(assistantName) ||
           activeGrammar === "unnamed")
       ) {
-        player.SetVar("sttActive", true);
-        player.SetVar("spokenText", hyp);
+        player.SetVar(VAR_STT_ACTIVE, true);
+        player.SetVar(VAR_SPOKEN_TEXT, hyp);
       }
     });
 

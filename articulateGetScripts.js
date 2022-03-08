@@ -14,6 +14,7 @@ const DEFAULT_COMMANDS_NAME = "commands.js";
 const DEFAULT_STTFUNCTIONS_NAME = "sttFunctions.js";
 const DEFAULT_RECOGNIZER_PROCESSOR_NAME = "recognizer-processor.js";
 const DEFAULT_CAPTIONS_JS_NAME = "captions.js";
+const DEFAULT_CONSTANTS_NAME = "constants.js";
 //css
 const DEFAULT_CAPTIONS_CSS_NAME = "captions.css";
 const DEFAULT_LOADING_NAME = "loading.css";
@@ -26,7 +27,11 @@ const DEFAULT_KEY = "v";
 
 let player = GetPlayer();
 
-let scripts = player.GetVar(SCRIPTS_VAR).split(",").filter(script => !!script);
+let scripts = player
+  .GetVar(SCRIPTS_VAR)
+  .split(",")
+  .filter((script) => !!script);
+
 let path = player.GetVar(SCRIPTS_PATH_VAR);
 // if path ends in a "/" dont't add it, if it doesn't add it
 path = path.charAt(path.length) == "/" ? path : path + "/";
@@ -38,6 +43,7 @@ async function loadAllFiles() {
     return;
   }
   window.CustomSLScriptsLoaded = true;
+  await loadScript(path + DEFAULT_CONSTANTS_NAME);
   await loadScript(path + DEFAULT_CONFIG_NAME);
   await loadConfig();
   for (const script of scripts) {
@@ -117,7 +123,6 @@ async function loadConfig() {
   if (!SPEECH_CONFIG.pushToTalkCombination.modifier) {
     SPEECH_CONFIG.pushToTalkCombination.modifier = DEFAULT_MODIFIER;
   }
-
   if (!SPEECH_CONFIG.pushToTalkCombination.key) {
     SPEECH_CONFIG.pushToTalkCombination.key = DEFAULT_KEY;
   }
