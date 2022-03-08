@@ -1,3 +1,25 @@
+// Files
+
+//js
+var DEFAULT_VOSK_NAME = "vosk.js";
+var DEFAULT_WORDLIST_NAME = "wordlist.js";
+var DEFAULT_CONFIG_NAME = "config.js";
+var DEFAULT_PEGGY_NAME = "peggy.min.js";
+var DEFAULT_COMMANDS_NAME = "commands.js";
+var DEFAULT_STTFUNCTIONS_NAME = "sttFunctions.js";
+var DEFAULT_RECOGNIZER_PROCESSOR_NAME = "recognizer-processor.js";
+var DEFAULT_CAPTIONS_JS_NAME = "captions.js";
+var DEFAULT_UTILS_NAME = "utils.js";
+//css
+var DEFAULT_CAPTIONS_CSS_NAME = "captions.css";
+var DEFAULT_LOADING_NAME = "loading.css";
+//misc
+var DEFAULT_MODEL_NAME = "vosk-model-small-de-0.15.tar.gz";
+var DEFAULT_NAMED_GRAMMAR_NAME = "grammar.peggy";
+var DEFAULT_UNNAMED_GRAMMAR_NAME = "grammar-unnamed.peggy";
+var DEFAULT_MODIFIER = "altKey";
+var DEFAULT_KEY = "v";
+
 // Storyline variables
 var VAR_SPOKEN_TEXT = "spokenText";
 var VAR_HIDE_LAYER = "hideLayer";

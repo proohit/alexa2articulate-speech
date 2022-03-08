@@ -5,26 +5,7 @@
 const SCRIPTS_VAR = "scripts";
 const SCRIPTS_PATH_VAR = "scriptsPath";
 
-//js
-const DEFAULT_VOSK_NAME = "vosk.js";
-const DEFAULT_WORDLIST_NAME = "wordlist.js";
-const DEFAULT_CONFIG_NAME = "config.js";
-const DEFAULT_PEGGY_NAME = "peggy.min.js";
-const DEFAULT_COMMANDS_NAME = "commands.js";
-const DEFAULT_STTFUNCTIONS_NAME = "sttFunctions.js";
-const DEFAULT_RECOGNIZER_PROCESSOR_NAME = "recognizer-processor.js";
-const DEFAULT_CAPTIONS_JS_NAME = "captions.js";
 const DEFAULT_CONSTANTS_NAME = "constants.js";
-const DEFAULT_UTILS_NAME = "utils.js";
-//css
-const DEFAULT_CAPTIONS_CSS_NAME = "captions.css";
-const DEFAULT_LOADING_NAME = "loading.css";
-//misc
-const DEFAULT_MODEL_NAME = "vosk-model-small-de-0.15.tar.gz";
-const DEFAULT_NAMED_GRAMMAR_NAME = "grammar.peggy";
-const DEFAULT_UNNAMED_GRAMMAR_NAME = "grammar-unnamed.peggy";
-const DEFAULT_MODIFIER = "altKey";
-const DEFAULT_KEY = "v";
 
 let player = GetPlayer();
 
