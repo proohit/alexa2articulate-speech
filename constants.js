@@ -15,8 +15,8 @@ var DEFAULT_CAPTIONS_CSS_NAME = "captions.css";
 var DEFAULT_LOADING_NAME = "loading.css";
 //misc
 var DEFAULT_MODEL_NAME = "vosk-model-small-de-0.15.tar.gz";
-var DEFAULT_NAMED_GRAMMAR_NAME = "grammar.peggy";
-var DEFAULT_UNNAMED_GRAMMAR_NAME = "grammar-unnamed.peggy";
+var DEFAULT_NAMED_GRAMMAR_NAME = "grammar.txt";
+var DEFAULT_UNNAMED_GRAMMAR_NAME = "grammar-unnamed.txt";
 var DEFAULT_MODIFIER = "altKey";
 var DEFAULT_KEY = "v";
 
