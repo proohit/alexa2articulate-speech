@@ -1,4 +1,8 @@
 let recognizer = null;
+let audioContext = null;
+let audioSourceNode = null;
+let mediaStream = null;
+let model = null;
 const player = GetPlayer();
 let spaceBarPressed = false;
 
@@ -106,8 +110,8 @@ async function startSTT() {
     enableLoading();
     updateLoadingText("Loading recognizer...");
     const channel = new MessageChannel();
-    const model = await Vosk.createModel(SPEECH_CONFIG.modelPath);
-    model.setLogLevel(-1);
+    model = await Vosk.createModel(SPEECH_CONFIG.modelPath);
+    model.setLogLevel(-2);
     model.registerPort(channel.port1);
 
     const sampleRate = 48000;
@@ -117,16 +121,16 @@ async function startSTT() {
       JSON.stringify(SPEECH_CONFIG.wordlist.flat())
     );
     updateLoadingText("Loading microphone...");
-    const mediaStream = await getMicrophoneStream(sampleRate);
+    mediaStream = await getMicrophoneStream(sampleRate);
     updateLoadingText("Connecting audio module...");
-    const audioContext = await initializeAudioContext();
+    audioContext = await initializeAudioContext();
     const recognizerProcessor = initializeRecognizerProcessor(
       audioContext,
       channel,
       recognizer.id
     );
-    const source = audioContext.createMediaStreamSource(mediaStream);
-    source.connect(recognizerProcessor);
+    audioSourceNode = audioContext.createMediaStreamSource(mediaStream);
+    audioSourceNode.connect(recognizerProcessor);
     disableLoading();
   }
 }
@@ -146,8 +150,22 @@ async function loadGrammar(grammarType) {
 
 function stopSTT() {
   console.debug("Stop STT");
+  player.SetVar(VAR_SPOKEN_TEXT, "");
+  mediaStream.getTracks().forEach((track) => track.stop());
+  if (model) {
+    model.terminate();
+    model = null;
+  }
+  if (audioSourceNode) {
+    audioSourceNode.disconnect();
+    audioSourceNode = null;
+  }
+  if (audioContext) {
+    audioContext.close();
+    audioContext = null;
+  }
   if (recognizer) {
-    recognizer.terminate();
+    recognizer.remove();
     recognizer = null;
   }
 }
