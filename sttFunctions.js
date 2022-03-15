@@ -33,8 +33,6 @@ function registerKeyboardShortcuts() {
         spaceBarPressed = true;
         activeGrammar = "unnamed";
         grammar = await loadGrammar(activeGrammar);
-        player.SetVar(VAR_STT_ACTIVE, true);
-        player.SetVar(VAR_STT_ENABLED, true);
       }
     }
   });
@@ -44,8 +42,6 @@ function registerKeyboardShortcuts() {
       spaceBarPressed = false;
       activeGrammar = "named";
       grammar = await loadGrammar(activeGrammar);
-      player.SetVar(VAR_STT_ENABLED, false);
-      player.SetVar(VAR_STT_ACTIVE, false);
     }
   });
 }
